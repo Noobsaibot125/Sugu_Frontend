@@ -1,0 +1,302 @@
+.sugu-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250, 245, 239, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e9e0d3;
+}
+
+.sugu-header__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.sugu-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.sugu-logo__img {
+  height: 46px;
+  object-fit: contain;
+  display: block;
+}
+
+.sugu-search {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #e3dace;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px -4px rgba(60, 40, 20, 0.15);
+}
+
+.sugu-search__query {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 14px;
+  min-width: 0;
+}
+
+.sugu-search__query span {
+  color: #a9997f;
+  font-size: 15px;
+  user-select: none;
+}
+
+.sugu-search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  color: #211d18;
+  width: 100%;
+  padding: 14px 0;
+}
+
+.sugu-search__divider {
+  width: 1px;
+  background: #ebe2d6;
+}
+
+.sugu-search__place {
+  display: flex;
+  align-items: center;
+  padding: 0 8px 0 12px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.sugu-search__place span {
+  color: #106c62;
+  font-size: 14px;
+  user-select: none;
+}
+
+.sugu-search select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #57514a;
+  font-weight: 500;
+  padding: 14px 4px;
+  cursor: pointer;
+  max-width: 140px;
+}
+
+.sugu-btn {
+  border: 0;
+  transition: filter .15s ease, transform .1s ease;
+  cursor: pointer;
+}
+
+.sugu-btn:hover {
+  filter: brightness(1.06);
+}
+
+.sugu-btn:active {
+  transform: scale(.98);
+}
+
+.sugu-search__button {
+  background: #c0512e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sugu-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.sugu-header__login {
+  font-size: 14px;
+  font-weight: 600;
+  color: #57514a;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.sugu-header__login:hover {
+  color: #c0512e;
+}
+
+.sugu-header__post {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: #106c62;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 11px 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px -8px rgba(16, 108, 98, 0.8);
+}
+
+.sugu-header__post span {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Logged-in State User Controls */
+.sugu-header__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sugu-header__icon {
+  display: inline-flex;
+  color: #6b6259;
+  padding: 6px;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.sugu-header__icon:hover {
+  color: #c0512e;
+  background: #f7e3da;
+}
+
+.sugu-header__profile {
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+
+.sugu-header__profile:hover {
+  transform: scale(1.05);
+}
+
+.sugu-header__logout {
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8a8175;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.sugu-header__logout:hover {
+  color: #c0512e;
+  background: #f2e7da;
+}
+
+/* Responsiveness */
+@media (max-width: 760px) {
+  .sugu-header__inner {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+  .sugu-search-wrapper {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    margin: 6px 0 0 0;
+  }
+  .sugu-search__place,
+  .sugu-search__divider {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .sugu-header__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .sugu-search__button {
+    padding: 0 14px;
+  }
+}
+
+/* Suggestions de recherche */
+.sugu-search-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 280px;
+  max-width: 750px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sugu-search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e3dace;
+  border-radius: 12px;
+  margin-top: 6px;
+  box-shadow: 0 10px 25px rgba(60, 40, 20, 0.12);
+  z-index: 100;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.sugu-search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid #f6f0e7;
+}
+
+.sugu-search-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.sugu-search-suggestion-item:hover {
+  background: #faf6f0;
+}
+
+.sugu-search-suggestion-icon {
+  font-size: 14px;
+  color: #a9997f;
+}
+
+.sugu-search-suggestion-text {
+  font-size: 14px;
+  color: #211d18;
+  flex: 1;
+  text-align: left;
+}
+
+.sugu-search-suggestion-type {
+  font-size: 11px;
+  background: #f0e6da;
+  color: #83725f;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+}

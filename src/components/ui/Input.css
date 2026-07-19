@@ -1,0 +1,36 @@
+.sugu-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sugu-field__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sugu-ink);
+}
+
+.sugu-field__input {
+  padding: 11px 14px;
+  border: 1.5px solid var(--sugu-border);
+  border-radius: var(--sugu-radius-md);
+  background: var(--sugu-surface);
+  color: var(--sugu-ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sugu-field__input:focus {
+  border-color: var(--sugu-primary);
+  box-shadow: 0 0 0 3px var(--sugu-primary-soft);
+}
+
+.sugu-field__input--error {
+  border-color: var(--sugu-danger);
+}
+
+.sugu-field__error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--sugu-danger);
+}

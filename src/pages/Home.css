@@ -1,0 +1,474 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+.sugu-home { min-height: 100vh; background: #faf5ef; color: #211d18; font-family: 'Hanken Grotesk', sans-serif; }
+.sugu-home ::selection { background: #c0512e; color: #fff; }
+.sugu-home input, .sugu-home select, .sugu-home button { font-family: inherit; }
+.sugu-home .sugu-btn { border: 0; transition: filter .15s ease, transform .1s ease; cursor: pointer; }
+.sugu-home .sugu-btn:hover { filter: brightness(1.06); }
+.sugu-home .sugu-btn:active { transform: scale(.98); }
+.sugu-home .sugu-link { transition: color .15s ease; cursor: pointer; }
+.sugu-home .sugu-link:hover { color: #c0512e; }
+
+
+
+.sugu-home .sugu-section { max-width: 1240px; margin: 0 auto; padding: 44px 24px 8px; }
+.sugu-home .sugu-section--hero { padding-top: 52px; }
+.sugu-home .sugu-hero { position: relative; overflow: hidden; border-radius: 28px; background: linear-gradient(115deg,#c0512e 0%,#a8431f 48%,#8f3a1c 100%); padding: 56px 48px; box-shadow: 0 30px 60px -34px rgba(140,58,28,.6); }
+.sugu-home .sugu-hero::before { content: ''; position: absolute; inset: 0; opacity: .12; background-image: radial-gradient(circle at 85% 18%,#faf5ef 2px,transparent 2px); background-size: 26px 26px; }
+.sugu-home .sugu-hero::after { content: ''; position: absolute; right: -60px; bottom: -80px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle,rgba(16,108,98,.55),transparent 70%); }
+.sugu-home .sugu-hero__content { position: relative; max-width: 640px; color: #faf5ef; }
+.sugu-home .sugu-hero__badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(250,245,239,.14); border: 1px solid rgba(250,245,239,.25); padding: 6px 13px; border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+.sugu-home .sugu-hero__badge span { width: 7px; height: 7px; border-radius: 50%; background: #e8a93b; }
+.sugu-home .sugu-hero h1 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; margin: 0 0 16px; }
+.sugu-home .sugu-hero h1 span { color: #e8a93b; }
+.sugu-home .sugu-hero p { font-size: 18px; line-height: 1.5; margin: 0 0 26px; color: rgba(250,245,239,.9); max-width: 520px; }
+.sugu-home .sugu-hero__actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.sugu-home .sugu-hero__cta { background: #faf5ef; color: #a8431f; font-weight: 700; font-size: 16px; padding: 15px 26px; border-radius: 14px; box-shadow: 0 12px 24px -12px rgba(0,0,0,.4); }
+.sugu-home .sugu-hero__trust { display: flex; align-items: center; gap: 18px; font-size: 13px; font-weight: 600; color: rgba(250,245,239,.9); flex-wrap: wrap; }
+.sugu-home .sugu-populars { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.sugu-home .sugu-populars__label { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #8a8175; }
+.sugu-home .sugu-populars__item { background: #f2e7da; color: #6e4a32; font-size: 13px; font-weight: 500; padding: 6px 13px; border-radius: 999px; }
+
+.sugu-home .sugu-section__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 22px; gap: 16px; }
+.sugu-home .sugu-section__head h2 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 30px; letter-spacing: -0.02em; margin: 0; }
+.sugu-home .sugu-section__more { font-size: 14px; font-weight: 600; color: #106c62; white-space: nowrap; }
+.sugu-home .sugu-section__title-row { display: flex; align-items: center; gap: 12px; }
+.sugu-home .sugu-sponsored-label { display: inline-flex; align-items: center; gap: 5px; background: #fbefd5; color: #b0791c; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; font-family: 'Space Mono', monospace; letter-spacing: .04em; }
+.sugu-home .sugu-categories { display: grid; grid-template-columns: repeat(7,1fr); gap: 14px; }
+.sugu-home .sugu-cat { background: #fffdfa; border: 1px solid #ebe2d6; border-radius: 18px; padding: 20px 12px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; transition: transform .16s ease, background .16s ease, border-color .16s ease; cursor: pointer; }
+.sugu-home .sugu-cat:hover { transform: translateY(-3px); border-color: #c0512e; background: #fff; }
+.sugu-home .sugu-cat__icon { width: 52px; height: 52px; border-radius: 15px; background: #f2e7da; display: flex; align-items: center; justify-content: center; font-size: 25px; }
+.sugu-home .sugu-cat__label { font-weight: 600; font-size: 14px; line-height: 1.2; color: #211d18; }
+.sugu-home .sugu-cat__count { font-family: 'Space Mono', monospace; font-size: 11px; color: #a9997f; }
+
+.sugu-home .sugu-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+.sugu-home .sugu-card { background: #fffdfa; border: 1px solid #ebe2d6; border-radius: 18px; overflow: hidden; box-shadow: 0 8px 20px -16px rgba(60,40,20,.4); position: relative; transition: transform .18s ease, box-shadow .18s ease; }
+.sugu-home .sugu-card:hover { transform: translateY(-4px); box-shadow: 0 18px 34px -20px rgba(60,40,20,.45); }
+.sugu-home .sugu-card--sponsored { border: 1.5px solid #e8a93b; box-shadow: 0 10px 24px -18px rgba(184,133,32,.6); }
+.sugu-home .sugu-card__visual { position: relative; height: 158px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.sugu-home .sugu-card__pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(135deg,rgba(255,255,255,.35) 0 12px,transparent 12px 24px); }
+.sugu-home .sugu-card__image-label { position: relative; font-family: 'Space Mono', monospace; font-size: 11px; color: rgba(60,40,20,.5); }
+.sugu-home .sugu-card__badges { position: absolute; top: 10px; left: 10px; display: flex; gap: 6px; }
+.sugu-home .sugu-card__badge { font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; }
+.sugu-home .sugu-card__badge--pro { background: #e8a93b; color: #4a3208; }
+.sugu-home .sugu-heart { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.92); display: flex; align-items: center; justify-content: center; color: #8a8175; font-size: 16px; border: 0; transition: transform .12s ease; cursor: pointer; }
+.sugu-home .sugu-heart:active { transform: scale(1.25); }
+.sugu-home .sugu-heart.is-active { color: #c0512e; }
+.sugu-home .sugu-card__content { padding: 13px 14px; display: flex; flex-direction: column; gap: 5px; }
+.sugu-home .sugu-card__title { font-weight: 600; font-size: 15px; line-height: 1.25; color: #211d18; }
+.sugu-home .sugu-card__price { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 19px; color: #c0512e; }
+.sugu-home .sugu-card__meta { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #8a8175; }
+
+.sugu-home .sugu-promo { position: relative; overflow: hidden; border-radius: 24px; background: linear-gradient(110deg,#106c62 0%,#0c554d 100%); padding: 40px 44px; display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap; box-shadow: 0 24px 48px -30px rgba(16,108,98,.7); }
+.sugu-home .sugu-promo::before { content: ''; position: absolute; left: -40px; top: -60px; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle,rgba(232,169,59,.4),transparent 70%); }
+.sugu-home .sugu-promo__text { position: relative; max-width: 560px; color: #f0f7f5; }
+.sugu-home .sugu-promo__label { font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #8fd0c6; margin-bottom: 10px; }
+.sugu-home .sugu-promo h3 { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 10px; }
+.sugu-home .sugu-promo p { font-size: 16px; line-height: 1.5; margin: 0; color: rgba(240,247,245,.85); }
+.sugu-home .sugu-promo__button { position: relative; background: #e8a93b; color: #4a3208; font-weight: 700; font-size: 16px; padding: 15px 28px; border-radius: 14px; flex-shrink: 0; box-shadow: 0 12px 24px -12px rgba(0,0,0,.4); }
+
+.sugu-home .sugu-section--stats { padding: 56px 24px; }
+.sugu-home .sugu-stats { background: #211d18; border-radius: 24px; padding: 44px; display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+.sugu-home .sugu-stat { display: flex; flex-direction: column; gap: 6px; text-align: center; }
+.sugu-home .sugu-stat__value { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 42px; line-height: 1; color: #e8a93b; letter-spacing: -0.02em; }
+.sugu-home .sugu-stat__label { font-size: 14px; color: rgba(250,245,239,.75); font-weight: 500; }
+
+
+
+@media (max-width: 1024px) {
+  .sugu-home .sugu-categories { grid-template-columns: repeat(4,1fr); }
+  .sugu-home .sugu-grid { grid-template-columns: repeat(3,1fr); }
+}
+@media (max-width: 760px) {
+  .sugu-home .sugu-section, .sugu-home .sugu-section--hero, .sugu-home .sugu-section--stats { padding-left: 16px; padding-right: 16px; }
+  .sugu-home .sugu-hero { padding: 36px 24px; }
+  .sugu-home .sugu-hero h1 { font-size: 34px; }
+  .sugu-home .sugu-section__head { align-items: flex-start; flex-direction: column; }
+  .sugu-home .sugu-categories { grid-template-columns: repeat(3,1fr); }
+  .sugu-home .sugu-grid { grid-template-columns: repeat(2,1fr); }
+  .sugu-home .sugu-stats { grid-template-columns: repeat(2,1fr); padding: 28px; }
+}
+@media (max-width: 520px) {
+  .sugu-home .sugu-categories { grid-template-columns: repeat(2,1fr); }
+  .sugu-home .sugu-grid { grid-template-columns: 1fr; }
+  .sugu-home .sugu-promo { padding: 32px 24px; }
+}
+
+/* Job section and cards */
+.sugu-home .sugu-job-carousel-wrapper {
+  position: relative;
+  width: 100%;
+}
+.sugu-home .sugu-job-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 18px;
+  padding: 12px 4px 24px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sugu-home .sugu-job-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+.sugu-home .sugu-job-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 290px;
+  min-height: 220px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #ebe2d6;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 12px rgba(60,40,20,0.02);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.sugu-home .sugu-job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(60,40,20,0.07);
+  border-color: #c0512e;
+}
+.sugu-home .sugu-job-title {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #211d18;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 42px;
+}
+.sugu-home .sugu-job-contract {
+  font-size: 13.5px;
+  color: #8a8175;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.sugu-home .sugu-job-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  background: #FFF2E8;
+  color: #FA541C;
+  border: 1px solid #FFD8BF;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+.sugu-home .sugu-job-meta {
+  font-size: 12.5px;
+  color: #8a8175;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.sugu-home .sugu-job-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #f3ece3;
+  padding-top: 14px;
+  margin-top: 16px;
+}
+.sugu-home .sugu-job-company {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.sugu-home .sugu-job-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f2e7da;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  color: #6e4a32;
+  flex-shrink: 0;
+  border: 1.5px solid #ebe2d6;
+  overflow: hidden;
+}
+.sugu-home .sugu-job-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sugu-home .sugu-job-company-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #211d18;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sugu-home .sugu-job-fav-btn {
+  background: none;
+  border: none;
+  color: #8a8175;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.12s, transform 0.12s;
+}
+.sugu-home .sugu-job-fav-btn.is-active {
+  color: #c0512e;
+}
+.sugu-home .sugu-job-fav-btn:active {
+  transform: scale(1.2);
+}
+.sugu-home .sugu-job-scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #ebe2d6;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #211d18;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.sugu-home .sugu-job-scroll-btn:hover {
+  background: #fcfbfa;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+.sugu-home .sugu-job-scroll-btn--left {
+  left: -20px;
+}
+.sugu-home .sugu-job-scroll-btn--right {
+  right: -20px;
+}
+
+/* Generic Card Carousel */
+.sugu-home .sugu-card-carousel-wrapper {
+  position: relative;
+  width: 100%;
+}
+.sugu-home .sugu-card-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 18px;
+  padding: 12px 4px 24px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sugu-home .sugu-card-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+.sugu-home .sugu-card-scroll-container .sugu-card {
+  width: 285px;
+  flex-shrink: 0;
+}
+.sugu-home .sugu-card-scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #ebe2d6;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #211d18;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.sugu-home .sugu-card-scroll-btn:hover {
+  background: #fcfbfa;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+.sugu-home .sugu-card-scroll-btn--left {
+  left: -20px;
+}
+.sugu-home .sugu-card-scroll-btn--right {
+  right: -20px;
+}
+
+/* Vlog Carousel Styles */
+.sugu-home .sugu-vlog-carousel-wrapper {
+  position: relative;
+  width: 100%;
+}
+.sugu-home .sugu-vlog-scroll-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 16px;
+  padding: 12px 4px 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sugu-home .sugu-vlog-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+.sugu-home .sugu-vlog-card {
+  width: 180px;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+.sugu-home .sugu-vlog-card:hover {
+  transform: translateY(-4px);
+}
+.sugu-home .sugu-vlog-video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: #111;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+.sugu-home .sugu-vlog-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.sugu-home .sugu-vlog-placeholder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sugu-home .sugu-vlog-placeholder-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+}
+.sugu-home .sugu-vlog-no-img {
+  font-size: 32px;
+  color: #fff;
+}
+.sugu-home .sugu-vlog-play-badge {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--sugu-primary);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+  pointer-events: none;
+}
+.sugu-home .sugu-vlog-card:hover .sugu-vlog-play-badge {
+  transform: scale(1.1);
+}
+.sugu-home .sugu-vlog-views-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  color: #FFF;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sugu-home .sugu-vlog-info {
+  margin-top: 10px;
+}
+.sugu-home .sugu-vlog-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--sugu-ink);
+  line-height: 1.3;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 35px;
+}
+.sugu-home .sugu-vlog-vendeur {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.sugu-home .sugu-vlog-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.sugu-home .sugu-vlog-vendeur-name {
+  font-size: 11.5px;
+  color: var(--sugu-ink-soft);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sugu-home .sugu-vlog-scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #ebe2d6;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #211d18;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.sugu-home .sugu-vlog-scroll-btn:hover {
+  background: #fcfbfa;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+.sugu-home .sugu-vlog-scroll-btn--left {
+  left: -20px;
+}
+.sugu-home .sugu-vlog-scroll-btn--right {
+  right: -20px;
+}
+

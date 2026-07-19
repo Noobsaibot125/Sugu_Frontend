@@ -1,0 +1,130 @@
+.sugu-footer {
+  background: #fffdfa;
+  border-top: 1px solid #e9e0d3;
+}
+
+.sugu-footer__main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 52px 24px 28px;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+.sugu-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 300px;
+}
+
+.sugu-footer__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sugu-footer__logo-img {
+  height: 38px;
+  object-fit: contain;
+  display: block;
+}
+
+.sugu-footer__brand p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #57514a;
+  margin: 0;
+}
+
+.sugu-socials {
+  display: flex;
+  gap: 10px;
+}
+
+.sugu-socials__item {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #f2e7da;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #6e4a32;
+  border: 0;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.sugu-socials__item:hover {
+  filter: brightness(1.06);
+}
+
+.sugu-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sugu-footer__title {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #8a8175;
+}
+
+.sugu-footer__col a {
+  font-size: 14px;
+  color: #57514a;
+}
+
+.sugu-footer__bottom {
+  border-top: 1px solid #efe7da;
+}
+
+.sugu-footer__bottom-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sugu-footer__bottom span,
+.sugu-footer__bottom a {
+  font-size: 13px;
+  color: #8a8175;
+}
+
+.sugu-footer__bottom-inner div {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.sugu-footer__bottom-inner div span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #57514a;
+}
+
+@media (max-width: 1024px) {
+  .sugu-footer__main {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .sugu-footer__main {
+    grid-template-columns: 1fr;
+  }
+}

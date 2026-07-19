@@ -1,0 +1,14 @@
+.sugu-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sugu-avatar--initiales {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sugu-primary);
+  color: #fff;
+  font-weight: 600;
+}

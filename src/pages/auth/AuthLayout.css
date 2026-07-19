@@ -1,0 +1,609 @@
+.sugu-auth-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ===== Panneau de marque (desktop) ===== */
+.sugu-auth-brand {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 44px;
+  background: linear-gradient(150deg, var(--sugu-primary) 0%, var(--sugu-primary-hover) 55%, #8f3a1c 100%);
+  color: var(--sugu-bg);
+}
+
+.sugu-auth-brand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background-image: radial-gradient(circle at 82% 16%, var(--sugu-bg) 2px, transparent 2px);
+  background-size: 26px 26px;
+}
+
+.sugu-auth-brand::after {
+  content: '';
+  position: absolute;
+  right: -70px;
+  bottom: -90px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 108, 98, 0.5), transparent 70%);
+}
+
+.sugu-auth-brand__logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.sugu-auth-brand__logo-img {
+  height: 180px;
+  object-fit: contain;
+  display: block;
+}
+
+.sugu-auth-mobile-logo .sugu-auth-brand__logo-img {
+  height: 120px;
+  margin: 0 auto;
+}
+
+.sugu-auth-brand__logo-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(250, 245, 239, 0.16);
+  border: 1.5px solid rgba(250, 245, 239, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sugu-font-heading);
+  font-weight: 800;
+  font-size: 22px;
+}
+
+.sugu-auth-brand__logo-texte {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.sugu-auth-brand__tagline {
+  font-family: var(--sugu-font-mono);
+  font-weight: 400;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-top: 3px;
+}
+
+.sugu-auth-brand__pitch {
+  position: relative;
+}
+
+.sugu-auth-brand__pitch h2 {
+  font-size: 40px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--sugu-bg);
+  margin: 0 0 16px;
+}
+
+.sugu-auth-brand__pitch p {
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+  color: rgba(250, 245, 239, 0.9);
+  max-width: 400px;
+}
+
+.sugu-auth-brand__chiffres {
+  display: flex;
+  gap: 26px;
+  margin-top: 30px;
+}
+
+.sugu-auth-brand__chiffre-valeur {
+  font-family: var(--sugu-font-heading);
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--sugu-accent);
+}
+
+.sugu-auth-brand__chiffre-libelle {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.sugu-auth-brand__copyright {
+  position: relative;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+/* ===== Panneau formulaire ===== */
+.sugu-auth-form-panel {
+  background: #f4eee5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  position: relative;
+}
+
+.sugu-auth-back-home {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sugu-ink-soft);
+  transition: color 0.15s ease;
+}
+
+.sugu-auth-back-home:hover {
+  color: var(--sugu-primary);
+}
+
+.sugu-auth-form-panel__inner {
+  width: 100%;
+  max-width: 400px;
+}
+
+.sugu-auth-mobile-logo {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  font-size: 21px;
+}
+
+.sugu-auth-mobile-logo__mark {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--sugu-radius-md);
+  background: var(--sugu-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sugu-bg);
+  font-size: 21px;
+}
+
+.sugu-auth-mobile-logo__dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--sugu-secondary);
+  border: 2px solid #f4eee5;
+}
+
+@media (max-width: 900px) {
+  .sugu-auth-wrap {
+    grid-template-columns: 1fr;
+  }
+  .sugu-auth-brand {
+    display: none;
+  }
+  .sugu-auth-mobile-logo {
+    display: flex;
+  }
+}
+
+/* ===== Contenu partagé des écrans ===== */
+.sugu-auth-screen h1 {
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.sugu-auth-screen__sous-titre {
+  font-size: 15px;
+  color: var(--sugu-ink-soft);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.sugu-auth-screen__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sugu-auth-screen__alerte {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 0;
+  font-size: 12px;
+  color: var(--sugu-primary-hover);
+}
+
+.sugu-auth-screen__alerte--globale {
+  margin: 0 0 4px;
+  padding: 10px 14px;
+  border-radius: var(--sugu-radius-md);
+  background: var(--sugu-danger-soft);
+  color: var(--sugu-danger);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.sugu-auth-screen__alerte--succes {
+  background: var(--sugu-secondary-soft);
+  color: var(--sugu-secondary);
+}
+
+.sugu-auth-screen__lien-bas {
+  text-align: center;
+  font-size: 14px;
+  color: var(--sugu-ink-soft);
+  margin: 24px 0 0;
+}
+
+.sugu-auth-screen__lien-bas .sugu-link {
+  font-weight: 700;
+  color: var(--sugu-primary);
+}
+
+.sugu-auth-screen__retour {
+  text-align: center;
+  font-size: 13px;
+  margin: 20px 0 0;
+}
+
+.sugu-auth-screen__retour .sugu-link {
+  color: var(--sugu-ink-faint);
+}
+
+/* Onglet e-mail / téléphone */
+.sugu-auth-onglets {
+  display: flex;
+  gap: 6px;
+  background: #eae1d4;
+  border-radius: var(--sugu-radius-md);
+  padding: 4px;
+  margin-bottom: 18px;
+}
+
+.sugu-auth-onglet {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px;
+  border-radius: 9px;
+  border: none;
+  background: transparent;
+  color: var(--sugu-ink-faint);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sugu-auth-onglet.actif {
+  background: var(--sugu-surface);
+  color: var(--sugu-ink);
+}
+
+/* Champ avec adornment (indicatif tel / œil mot de passe) */
+.sugu-auth-champ-compose {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--sugu-border);
+  border-radius: var(--sugu-radius-md);
+  background: var(--sugu-surface);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sugu-auth-champ-compose:focus-within {
+  border-color: var(--sugu-primary);
+  box-shadow: 0 0 0 3px var(--sugu-primary-soft);
+}
+
+.sugu-auth-champ-compose--erreur {
+  border-color: var(--sugu-danger);
+}
+
+.sugu-auth-champ-compose__prefixe {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 12px;
+  background: #f2e7da;
+  color: #6e4a32;
+  font-weight: 700;
+  font-size: 14px;
+  border-right: 1px solid var(--sugu-border);
+  flex-shrink: 0;
+}
+
+.sugu-auth-champ-compose input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--sugu-ink);
+  padding: 11px 14px;
+}
+
+.sugu-auth-champ-compose__oeil {
+  padding: 0 14px;
+  font-size: 17px;
+  color: var(--sugu-ink-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  align-self: stretch;
+}
+
+.sugu-auth-champ-ligne {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.sugu-auth-champ-ligne label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.sugu-auth-champ-label {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+/* Type de compte */
+.sugu-auth-types {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.sugu-auth-type {
+  flex: 1;
+  border: 1.5px solid var(--sugu-border);
+  background: var(--sugu-surface);
+  border-radius: 15px;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.sugu-auth-type.actif {
+  border-color: var(--sugu-primary);
+  background: #f7ece0;
+}
+
+.sugu-auth-type__icone {
+  font-size: 22px;
+}
+
+.sugu-auth-type__label {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--sugu-ink);
+}
+
+.sugu-auth-type__desc {
+  font-size: 12px;
+  color: var(--sugu-ink-faint);
+  line-height: 1.3;
+}
+
+.sugu-auth-type__coche {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--sugu-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+/* Conditions d'utilisation */
+.sugu-auth-conditions {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 2px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: inherit;
+  padding: 0;
+}
+
+.sugu-auth-conditions__case {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 6px;
+  border: 2px solid var(--sugu-border);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.sugu-auth-conditions.actif .sugu-auth-conditions__case {
+  border-color: var(--sugu-primary);
+  background: var(--sugu-primary);
+}
+
+.sugu-auth-conditions__texte {
+  font-size: 13px;
+  color: var(--sugu-ink-soft);
+  line-height: 1.45;
+}
+
+.sugu-auth-conditions__texte .sugu-link {
+  color: var(--sugu-primary);
+  font-weight: 600;
+}
+
+.sugu-auth-mdp-oublie {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sugu-primary);
+}
+
+.sugu-auth-google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--sugu-surface);
+  border: 1px solid var(--sugu-border);
+  color: var(--sugu-ink);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 13px;
+  border-radius: var(--sugu-radius-md);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.sugu-auth-google-btn:hover {
+  filter: brightness(0.98);
+}
+
+.sugu-auth-google-btn__g {
+  font-weight: 800;
+  color: #4285f4;
+}
+
+/* Séparateur "ou" */
+.sugu-auth-separateur {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+}
+
+.sugu-auth-separateur::before,
+.sugu-auth-separateur::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--sugu-border);
+}
+
+.sugu-auth-separateur span {
+  font-size: 12px;
+  color: var(--sugu-ink-faint);
+}
+
+/* Icône ronde d'en-tête (reset / vérification) */
+.sugu-auth-icone-tete {
+  width: 60px;
+  height: 60px;
+  border-radius: 17px;
+  background: #f2e7da;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 18px;
+}
+
+/* OTP */
+.sugu-auth-otp {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 8px;
+}
+
+.sugu-auth-otp input {
+  width: 100%;
+  aspect-ratio: 1;
+  text-align: center;
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--sugu-ink);
+  border: 1.5px solid var(--sugu-border);
+  border-radius: 13px;
+  background: var(--sugu-surface);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sugu-auth-otp input:focus {
+  border-color: var(--sugu-primary);
+  box-shadow: 0 0 0 3px var(--sugu-primary-soft);
+}
+
+.sugu-auth-otp input.actif {
+  border-color: var(--sugu-primary);
+}
+
+/* Écran de succès */
+.sugu-auth-succes {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.sugu-auth-succes__icone {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--sugu-secondary-soft);
+  color: var(--sugu-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  margin: 0 auto 20px;
+}
+
+.sugu-auth-succes h1 {
+  font-size: 28px;
+}
+
+.sugu-auth-succes p {
+  font-size: 15px;
+  color: var(--sugu-ink-soft);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}

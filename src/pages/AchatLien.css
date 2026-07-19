@@ -1,0 +1,447 @@
+.sugu-checkout-page {
+  min-height: 100vh;
+  background-color: var(--sugu-bg);
+  color: var(--sugu-ink);
+  font-family: var(--sugu-font-body);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.sugu-checkout-page__header {
+  height: 70px;
+  background: var(--sugu-surface);
+  border-bottom: 1px solid var(--sugu-border);
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  flex-shrink: 0;
+}
+
+.sugu-checkout-page__header-logo {
+  display: flex;
+  align-items: center;
+}
+
+.sugu-checkout-page__header-divider {
+  width: 1.5px;
+  height: 24px;
+  background-color: var(--sugu-border);
+  margin: 0 20px;
+}
+
+.sugu-checkout-page__header-title {
+  font-family: var(--sugu-font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--sugu-ink);
+}
+
+.sugu-checkout-page__main {
+  flex: 1;
+  max-width: 1000px; /* Légèrement rétréci pour un aspect plus centré */
+  width: 100%;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.sugu-checkout-page__grid {
+  display: grid;
+  grid-template-columns: 1.62fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Cartes ultra-propres */
+.sugu-checkout-page__card {
+  background: var(--sugu-surface);
+  border: 1px solid var(--sugu-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(60, 40, 20, 0.01);
+}
+
+.sugu-checkout-page__card-title {
+  font-family: var(--sugu-font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.sugu-checkout-page__card-subtitle {
+  font-size: 12px;
+  color: var(--sugu-ink-soft);
+  margin: -6px 0 16px 0;
+}
+
+/* Options de remise horizontales (gagne beaucoup de place) */
+.sugu-checkout-page__delivery-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.sugu-checkout-page__delivery-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1.5px solid var(--sugu-border);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--sugu-surface);
+  transition: all 0.2s ease;
+}
+
+.sugu-checkout-page__delivery-tile:hover {
+  background: #FAF6F0;
+  border-color: var(--sugu-primary-soft);
+}
+
+.sugu-checkout-page__delivery-tile.selected {
+  background: #FDF7F2;
+  border-color: var(--sugu-primary);
+}
+
+.sugu-checkout-page__tile-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.sugu-checkout-page__tile-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--sugu-ink);
+}
+
+.sugu-checkout-page__tile-desc {
+  font-size: 11px;
+  color: var(--sugu-ink-faint);
+  margin-top: 1px;
+}
+
+/* Séparateur interne à la carte */
+.sugu-checkout-page__section-divider {
+  height: 1px;
+  background-color: var(--sugu-border);
+  margin: 20px 0;
+}
+
+/* Grille de champs interne */
+.sugu-checkout-page__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sugu-checkout-page__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.sugu-checkout-page__field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sugu-ink-soft);
+}
+
+.sugu-checkout-page__field input,
+.sugu-checkout-page__field select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1.5px solid var(--sugu-border);
+  border-radius: 8px;
+  background: var(--sugu-surface);
+  font-size: 13px;
+  outline: none;
+  color: var(--sugu-ink);
+}
+
+.sugu-checkout-page__field input:focus,
+.sugu-checkout-page__field select:focus {
+  border-color: var(--sugu-primary);
+}
+
+.sugu-checkout-page__textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--sugu-border);
+  border-radius: 8px;
+  background: var(--sugu-surface);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  color: var(--sugu-ink);
+  resize: none;
+  transition: border-color 0.15s ease;
+}
+
+.sugu-checkout-page__textarea:focus {
+  border-color: var(--sugu-primary);
+}
+
+.sugu-checkout-page__phone-prefix {
+  height: 42px;
+  padding: 0 12px;
+  background: #F1E9DC;
+  border: 1.5px solid var(--sugu-border);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sugu-ink-soft);
+}
+
+/* Modes de paiement horizontaux */
+.sugu-checkout-page__payment-methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.sugu-checkout-page__payment-label {
+  border: 1.5px solid var(--sugu-border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  background: var(--sugu-surface);
+  transition: all 0.2s ease;
+  min-height: 80px;
+}
+
+.sugu-checkout-page__payment-label:hover {
+  background: #FAF6F0;
+  border-color: var(--sugu-primary-soft);
+}
+
+.sugu-checkout-page__payment-label.selected {
+  background: #FDF7F2;
+  border-color: var(--sugu-primary);
+}
+
+.sugu-checkout-page__payment-icon {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sugu-checkout-page__payment-name {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Bouton de validation */
+.sugu-checkout-page__submit-container {
+  margin-top: 20px;
+}
+
+/* Recap Sidebar */
+.sugu-checkout-page__recap-card {
+  position: sticky;
+  top: 30px;
+}
+
+.sugu-checkout-page__recap-title {
+  font-family: var(--sugu-font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 14px 0;
+  border-bottom: 1px solid var(--sugu-border);
+  padding-bottom: 10px;
+}
+
+.sugu-checkout-page__product-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sugu-checkout-page__product-media {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  background: #EADFCE;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sugu-checkout-page__product-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--sugu-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sugu-checkout-page__product-seller {
+  font-size: 11px;
+  color: var(--sugu-ink-faint);
+  margin-top: 1px;
+}
+
+.sugu-checkout-page__recap-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--sugu-ink-soft);
+}
+
+.sugu-checkout-page__recap-price {
+  font-weight: 600;
+  color: var(--sugu-ink);
+}
+
+.sugu-checkout-page__recap-divider {
+  height: 1px;
+  background: var(--sugu-border);
+  margin: 14px 0;
+}
+
+.sugu-checkout-page__recap-row.total {
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--sugu-primary);
+  margin-bottom: 0;
+}
+
+/* États généraux */
+.sugu-checkout-page__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+  background-color: var(--sugu-bg);
+}
+
+.sugu-checkout-page__spinner {
+  width: 38px;
+  height: 38px;
+  border: 3.5px solid #F1E9DC;
+  border-top-color: var(--sugu-primary);
+  border-radius: 50%;
+  animation: sugu-spin 0.8s linear infinite;
+}
+
+.sugu-checkout-page__error-container,
+.sugu-checkout-page__success-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--sugu-bg);
+  padding: 20px;
+}
+
+.sugu-checkout-page__error-card,
+.sugu-checkout-page__success-card {
+  max-width: 420px;
+  width: 100%;
+  background: var(--sugu-surface);
+  border: 1px solid var(--sugu-border);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  box-shadow: 0 8px 24px -12px rgba(60, 40, 20, 0.15);
+}
+
+.sugu-checkout-page__error-icon {
+  font-size: 40px;
+  margin-bottom: 14px;
+}
+
+.sugu-checkout-page__success-icon {
+  font-size: 40px;
+  color: #fff;
+  background: var(--sugu-secondary);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+}
+
+.sugu-checkout-page__error-card h2,
+.sugu-checkout-page__success-card h2 {
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.sugu-checkout-page__error-card p,
+.sugu-checkout-page__success-card p {
+  font-size: 13px;
+  color: var(--sugu-ink-soft);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.sugu-checkout-page__success-btn {
+  background: var(--sugu-secondary);
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+@keyframes sugu-spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsiveness */
+@media (max-width: 860px) {
+  .sugu-checkout-page__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .sugu-checkout-page__delivery-options {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .sugu-checkout-page__recap-card {
+    position: static;
+  }
+  .sugu-checkout-page__header {
+    padding: 0 20px;
+  }
+  .sugu-checkout-page__header-divider {
+    margin: 0 14px;
+  }
+}

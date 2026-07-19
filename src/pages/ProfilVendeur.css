@@ -1,0 +1,763 @@
+.sugu-vendeur {
+  padding-bottom: var(--sugu-space-7);
+}
+
+/* Fil d'ariane */
+.sugu-vendeur__fil {
+  display: flex;
+  align-items: center;
+  gap: var(--sugu-space-2);
+  padding: var(--sugu-space-4) var(--sugu-space-4) 0;
+  font-size: 13px;
+  color: var(--sugu-ink-faint);
+}
+
+.sugu-vendeur__fil strong {
+  color: var(--sugu-ink-soft);
+  font-weight: 600;
+}
+
+/* ================= Bandeau héro ================= */
+.sugu-vendeur__hero {
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--sugu-space-5);
+  border-radius: var(--sugu-radius-lg);
+  background: linear-gradient(120deg, var(--sugu-primary) 0%, var(--sugu-primary-hover) 60%, #8f3a1c 120%);
+  box-shadow: 0 24px 50px -32px rgba(140, 58, 28, 0.6);
+  padding: var(--sugu-space-6);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sugu-space-5);
+  flex-wrap: wrap;
+}
+
+.sugu-vendeur__hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  background-image: radial-gradient(circle at 88% 22%, var(--sugu-bg) 2px, transparent 2px);
+  background-size: 26px 26px;
+}
+
+.sugu-vendeur__hero::after {
+  content: '';
+  position: absolute;
+  right: -50px;
+  bottom: -80px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 108, 98, 0.45), transparent 70%);
+}
+
+.sugu-vendeur__hero-avatar {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.sugu-vendeur__hero-check {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sugu-secondary);
+  border: 3px solid var(--sugu-primary-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.sugu-vendeur__hero-infos {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-width: 240px;
+  color: var(--sugu-bg);
+}
+
+.sugu-vendeur__hero-infos h1 {
+  font-size: 30px;
+  color: var(--sugu-bg);
+}
+
+.sugu-vendeur__hero-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--sugu-space-2);
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.sugu-vendeur__badge-pro {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--sugu-accent);
+  color: #4a3208;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: var(--sugu-radius-full);
+  font-family: var(--sugu-font-mono);
+  letter-spacing: 0.03em;
+}
+
+.sugu-vendeur__badge-verifie {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(250, 245, 239, 0.16);
+  border: 1px solid rgba(250, 245, 239, 0.3);
+  color: var(--sugu-bg);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: var(--sugu-radius-full);
+}
+
+.sugu-vendeur__hero-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sugu-space-4);
+  flex-wrap: wrap;
+  margin-top: var(--sugu-space-3);
+  font-size: 14px;
+  color: rgba(250, 245, 239, 0.92);
+}
+
+.sugu-vendeur__hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sugu-vendeur__hero-note {
+  color: var(--sugu-accent);
+}
+
+.sugu-vendeur__hero-note b {
+  color: var(--sugu-bg);
+}
+
+.sugu-vendeur__hero-note span {
+  opacity: 0.85;
+}
+
+.sugu-vendeur__hero-reponse {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sugu-space-2);
+  margin-top: var(--sugu-space-4);
+  background: rgba(16, 108, 98, 0.35);
+  border: 1px solid rgba(143, 208, 198, 0.5);
+  padding: 8px 14px;
+  border-radius: var(--sugu-radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  color: #eaf7f4;
+}
+
+.sugu-etoiles {
+  display: inline-flex;
+  gap: 1px;
+  color: var(--sugu-accent);
+}
+
+/* ================= Corps ================= */
+.sugu-vendeur__corps {
+  padding-top: var(--sugu-space-6);
+}
+
+.sugu-vendeur__grille-principale {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--sugu-space-6);
+  align-items: start;
+}
+
+.sugu-vendeur__colonne-gauche {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sugu-space-6);
+  min-width: 0;
+}
+
+.sugu-vendeur__section-entete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--sugu-space-4);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sugu-vendeur__section-entete h2 {
+  font-size: 24px;
+}
+
+.sugu-vendeur__compteur {
+  color: var(--sugu-ink-faint);
+  font-weight: 500;
+  font-size: 18px;
+}
+
+/* Filtres catégories */
+.sugu-vendeur__chips {
+  display: flex;
+  gap: var(--sugu-space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--sugu-space-4);
+}
+
+.sugu-vendeur__chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sugu-surface);
+  color: var(--sugu-ink-soft);
+  border: 1.5px solid var(--sugu-border);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--sugu-radius-full);
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.sugu-vendeur__chip span {
+  opacity: 0.65;
+  font-family: var(--sugu-font-mono);
+  font-size: 12px;
+}
+
+.sugu-vendeur__chip.actif {
+  background: var(--sugu-ink);
+  color: var(--sugu-bg);
+  border-color: var(--sugu-ink);
+}
+
+/* Grille annonces */
+.sugu-vendeur__grille-annonces {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+/* Avis */
+.sugu-vendeur__titre-avis {
+  font-size: 24px;
+  margin-bottom: var(--sugu-space-4);
+}
+
+.sugu-vendeur__resume-avis {
+  background: var(--sugu-surface);
+  border: 1px solid var(--sugu-border);
+  border-radius: var(--sugu-radius-lg);
+  padding: var(--sugu-space-5);
+  margin-bottom: var(--sugu-space-5);
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sugu-vendeur__note-globale {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sugu-vendeur__note-chiffre {
+  font-family: var(--sugu-font-heading);
+  font-weight: 800;
+  font-size: 52px;
+  line-height: 1;
+  color: var(--sugu-ink);
+}
+
+.sugu-vendeur__note-globale .sugu-etoiles {
+  font-size: 18px;
+  margin: 6px 0 4px;
+}
+
+.sugu-vendeur__note-total {
+  font-size: 13px;
+  color: var(--sugu-ink-faint);
+}
+
+.sugu-vendeur__barres {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sugu-vendeur__barre-ligne {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sugu-vendeur__barre-label {
+  font-size: 12px;
+  color: var(--sugu-ink-faint);
+  width: 28px;
+}
+
+.sugu-vendeur__barre-piste {
+  flex: 1;
+  height: 8px;
+  border-radius: var(--sugu-radius-full);
+  background: var(--sugu-accent-soft);
+  overflow: hidden;
+}
+
+.sugu-vendeur__barre-remplie {
+  height: 100%;
+  background: var(--sugu-accent);
+  border-radius: var(--sugu-radius-full);
+}
+
+.sugu-vendeur__barre-compte {
+  font-family: var(--sugu-font-mono);
+  font-size: 11px;
+  color: var(--sugu-ink-faint);
+  width: 30px;
+  text-align: right;
+}
+
+.sugu-vendeur__liste-avis {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sugu-avis {
+  background: var(--sugu-surface);
+  border: 1px solid var(--sugu-border);
+  border-radius: var(--sugu-radius-md);
+  padding: var(--sugu-space-4) 20px;
+}
+
+.sugu-avis__entete {
+  display: flex;
+  gap: var(--sugu-space-3);
+  align-items: center;
+  margin-bottom: var(--sugu-space-2);
+}
+
+.sugu-avis__nom-ligne {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sugu-avis__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sugu-space-2);
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--sugu-ink-faint);
+}
+
+.sugu-avis p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--sugu-ink-soft);
+}
+
+.sugu-vendeur__voir-tous {
+  width: 100%;
+  text-align: center;
+  margin-top: var(--sugu-space-4);
+  background: var(--sugu-surface);
+  border: 1.5px solid var(--sugu-border);
+  color: var(--sugu-ink-soft);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+  border-radius: var(--sugu-radius-md);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.sugu-vendeur__voir-tous:hover {
+  filter: brightness(0.98);
+}
+
+/* ================= Colonne droite ================= */
+.sugu-vendeur__colonne-droite {
+  position: sticky;
+  top: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sugu-space-4);
+  min-width: 0;
+}
+
+.sugu-vendeur__carte-contact {
+  background: var(--sugu-surface);
+  border: 1px solid var(--sugu-border);
+  border-radius: var(--sugu-radius-lg);
+  padding: var(--sugu-space-5);
+  box-shadow: var(--sugu-shadow-md);
+}
+
+.sugu-vendeur__stats-rapides {
+  display: flex;
+  gap: var(--sugu-space-3);
+  margin-bottom: var(--sugu-space-4);
+}
+
+.sugu-vendeur__stat-rapide {
+  flex: 1;
+  text-align: center;
+  border-radius: var(--sugu-radius-md);
+  padding: 16px 10px;
+}
+
+.sugu-vendeur__stat-rapide strong {
+  font-family: var(--sugu-font-heading);
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1;
+  display: block;
+}
+
+.sugu-vendeur__stat-rapide span {
+  font-size: 12px;
+  color: var(--sugu-ink-faint);
+  margin-top: 5px;
+  display: block;
+}
+
+.sugu-vendeur__stat-rapide--primaire {
+  background: var(--sugu-primary-soft);
+}
+
+.sugu-vendeur__stat-rapide--primaire strong {
+  color: var(--sugu-primary);
+}
+
+.sugu-vendeur__stat-rapide--secondaire {
+  background: var(--sugu-secondary-soft);
+}
+
+.sugu-vendeur__stat-rapide--secondaire strong {
+  color: var(--sugu-secondary);
+}
+
+.sugu-vendeur__btn-contact {
+  font-size: 16px;
+}
+
+.sugu-vendeur__checklist {
+  list-style: none;
+  margin: var(--sugu-space-4) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sugu-vendeur__checklist li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--sugu-ink-soft);
+}
+
+.sugu-vendeur__checklist li svg {
+  color: var(--sugu-secondary);
+  flex-shrink: 0;
+}
+
+/* Sécurité */
+.sugu-vendeur__securite {
+  background: var(--sugu-ink);
+  border-radius: var(--sugu-radius-lg);
+  padding: var(--sugu-space-5);
+  color: var(--sugu-bg);
+}
+
+.sugu-vendeur__securite-titre {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--sugu-space-4);
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.sugu-vendeur__securite-icone {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: rgba(232, 169, 59, 0.2);
+  color: var(--sugu-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sugu-vendeur__securite ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sugu-space-3);
+}
+
+.sugu-vendeur__securite li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(250, 245, 239, 0.85);
+}
+
+.sugu-vendeur__securite li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--sugu-accent);
+}
+
+.sugu-vendeur__signaler {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--sugu-ink-faint);
+  cursor: pointer;
+  padding: var(--sugu-space-2);
+}
+
+.sugu-vendeur__signaler:hover {
+  color: var(--sugu-primary);
+}
+
+/* ================= Modale de contact ================= */
+.sugu-modal-fond {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(33, 29, 24, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sugu-space-5);
+}
+
+.sugu-modal {
+  width: 100%;
+  max-width: 440px;
+  background: var(--sugu-bg);
+  border-radius: var(--sugu-radius-lg);
+  overflow: hidden;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.5);
+}
+
+.sugu-modal__entete {
+  padding: var(--sugu-space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--sugu-space-3);
+  border-bottom: 1px solid var(--sugu-border);
+  background: var(--sugu-surface);
+}
+
+.sugu-modal__avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.sugu-modal__avatar-check {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--sugu-secondary);
+  border: 2px solid var(--sugu-surface);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sugu-modal__avatar-check svg {
+  width: 9px;
+  height: 9px;
+}
+
+.sugu-modal__identite {
+  flex: 1;
+  min-width: 0;
+}
+
+.sugu-modal__nom {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.sugu-modal__statut {
+  font-size: 12px;
+  color: var(--sugu-secondary);
+  font-weight: 600;
+}
+
+.sugu-modal__fermer {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--sugu-radius-sm);
+  background: var(--sugu-primary-soft);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sugu-primary-hover);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.sugu-modal__corps {
+  padding: var(--sugu-space-5);
+}
+
+.sugu-modal__label {
+  font-size: 13px;
+  color: var(--sugu-ink-faint);
+  margin-bottom: 10px;
+}
+
+.sugu-modal__rapides {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--sugu-space-4);
+}
+
+.sugu-modal__rapide {
+  text-align: left;
+  background: #f2e7da;
+  color: #6e4a32;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 11px 14px;
+  border-radius: var(--sugu-radius-md);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.sugu-modal__rapide:hover {
+  filter: brightness(0.97);
+}
+
+.sugu-modal__texte {
+  width: 100%;
+  height: 84px;
+  resize: none;
+  border: 1px solid var(--sugu-border);
+  border-radius: var(--sugu-radius-md);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--sugu-ink);
+  outline: none;
+  background: var(--sugu-surface);
+  margin-bottom: var(--sugu-space-3);
+}
+
+.sugu-modal__texte:focus {
+  border-color: var(--sugu-primary);
+}
+
+.sugu-modal__confirmation {
+  text-align: center;
+  padding: 18px 0;
+}
+
+.sugu-modal__confirmation-icone {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: var(--sugu-secondary-soft);
+  color: var(--sugu-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sugu-modal__confirmation-icone svg {
+  width: 26px;
+  height: 26px;
+}
+
+.sugu-modal__confirmation-titre {
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.sugu-modal__confirmation p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--sugu-ink-soft);
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 900px) {
+  .sugu-vendeur__grille-principale {
+    grid-template-columns: 1fr;
+    gap: var(--sugu-space-5);
+  }
+
+  .sugu-vendeur__colonne-droite {
+    position: static;
+    order: -1;
+  }
+
+  .sugu-vendeur__grille-annonces {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sugu-vendeur__hero {
+    padding: var(--sugu-space-5);
+  }
+}
+
+@media (max-width: 560px) {
+  .sugu-vendeur__grille-annonces {
+    grid-template-columns: 1fr;
+  }
+
+  .sugu-vendeur__hero-infos h1 {
+    font-size: 24px;
+  }
+}

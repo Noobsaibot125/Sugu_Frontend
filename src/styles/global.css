@@ -1,0 +1,69 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sugu-font);
+  background: var(--sugu-bg);
+  color: var(--sugu-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--sugu-font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 var(--sugu-space-4);
+}
+
+.sugu-link {
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.sugu-link:hover {
+  color: var(--sugu-primary);
+}
+
+.hide-mobile {
+  display: inline;
+}
+
+@media (max-width: 720px) {
+  .hide-mobile {
+    display: none;
+  }
+}

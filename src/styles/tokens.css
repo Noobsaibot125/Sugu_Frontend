@@ -1,0 +1,55 @@
+/* ============================================
+   Design system Sugu — tokens (charte v1)
+   Palette : terracotta, vert profond, doré, crème, encre
+   Typo : Poppins
+   ============================================ */
+:root {
+  /* Couleurs de marque */
+  --sugu-primary: #c0512e;        /* terracotta */
+  --sugu-primary-hover: #a8431f;
+  --sugu-primary-soft: #f7e3da;
+  --sugu-secondary: #106c62;      /* vert profond */
+  --sugu-secondary-hover: #0b544c;
+  --sugu-secondary-soft: #dcecea;
+  --sugu-accent: #e8a93b;         /* doré */
+  --sugu-accent-soft: #faf0d9;
+
+  /* Neutres */
+  --sugu-bg: #faf5ef;             /* crème */
+  --sugu-surface: #ffffff;
+  --sugu-ink: #211d18;            /* encre */
+  --sugu-ink-soft: #6b6259;
+  --sugu-ink-faint: #a39a8f;
+  --sugu-border: #e9e0d5;
+
+  /* États */
+  --sugu-success: #106c62;
+  --sugu-danger: #c0392b;
+  --sugu-danger-soft: #f9e2df;
+
+  /* Typographie */
+  --sugu-font: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --sugu-font-body: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --sugu-font-heading: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --sugu-font-mono: 'Space Mono', monospace;
+
+  /* Rayons */
+  --sugu-radius-sm: 8px;
+  --sugu-radius-md: 12px;
+  --sugu-radius-lg: 16px;
+  --sugu-radius-full: 999px;
+
+  /* Ombres */
+  --sugu-shadow-sm: 0 1px 3px rgba(33, 29, 24, 0.08);
+  --sugu-shadow-md: 0 4px 16px rgba(33, 29, 24, 0.1);
+  --sugu-shadow-lg: 0 12px 32px rgba(33, 29, 24, 0.14);
+
+  /* Espacements */
+  --sugu-space-1: 4px;
+  --sugu-space-2: 8px;
+  --sugu-space-3: 12px;
+  --sugu-space-4: 16px;
+  --sugu-space-5: 24px;
+  --sugu-space-6: 32px;
+  --sugu-space-7: 48px;
+}

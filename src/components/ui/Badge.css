@@ -1,0 +1,14 @@
+.sugu-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--sugu-radius-full);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sugu-badge--primary { background: var(--sugu-primary-soft); color: var(--sugu-primary); }
+.sugu-badge--secondary { background: var(--sugu-secondary-soft); color: var(--sugu-secondary); }
+.sugu-badge--accent { background: var(--sugu-accent-soft); color: #a8770f; }
+.sugu-badge--neutral { background: var(--sugu-border); color: var(--sugu-ink-soft); }

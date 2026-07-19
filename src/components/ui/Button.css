@@ -1,0 +1,88 @@
+.sugu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sugu-space-2);
+  border: none;
+  font-family: var(--sugu-font);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+  white-space: nowrap;
+}
+
+.sugu-btn:active {
+  transform: scale(0.98);
+}
+
+.sugu-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Tailles */
+.sugu-btn--sm { padding: 6px 14px; font-size: 13px; border-radius: var(--sugu-radius-sm); }
+.sugu-btn--md { padding: 10px 20px; font-size: 14px; border-radius: var(--sugu-radius-md); }
+.sugu-btn--lg { padding: 14px 28px; font-size: 16px; border-radius: var(--sugu-radius-lg); }
+.sugu-btn--full { width: 100%; }
+
+/* Variantes */
+.sugu-btn--primary {
+  background: var(--sugu-primary);
+  color: #fff;
+}
+.sugu-btn--primary:hover:not(:disabled) {
+  background: var(--sugu-primary-hover);
+}
+
+.sugu-btn--secondary {
+  background: var(--sugu-secondary);
+  color: #fff;
+}
+.sugu-btn--secondary:hover:not(:disabled) {
+  background: var(--sugu-secondary-hover);
+}
+
+.sugu-btn--outline {
+  background: transparent;
+  color: var(--sugu-primary);
+  border: 1.5px solid var(--sugu-primary);
+}
+.sugu-btn--outline:hover:not(:disabled) {
+  background: var(--sugu-primary-soft);
+}
+
+.sugu-btn--ghost {
+  background: transparent;
+  color: var(--sugu-ink);
+}
+.sugu-btn--ghost:hover:not(:disabled) {
+  background: var(--sugu-primary-soft);
+  color: var(--sugu-primary);
+}
+
+.sugu-btn--danger {
+  background: var(--sugu-danger);
+  color: #fff;
+}
+.sugu-btn--danger:hover:not(:disabled) {
+  background: #a03024;
+}
+
+.sugu-btn--accent {
+  background: var(--sugu-accent);
+  color: #4a3208;
+  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.4);
+}
+.sugu-btn--accent:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.sugu-btn--inverse {
+  background: var(--sugu-bg);
+  color: var(--sugu-primary-hover);
+  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.4);
+}
+.sugu-btn--inverse:hover:not(:disabled) {
+  filter: brightness(0.98);
+}
