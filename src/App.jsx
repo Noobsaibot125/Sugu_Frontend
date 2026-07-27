@@ -17,6 +17,7 @@ import Abonnements from './pages/Abonnements';
 import PasserPro from './pages/PasserPro';
 import BoutiqueDetail from './pages/BoutiqueDetail';
 import Privacy from './pages/Privacy';
+import PaiementSucces from './pages/PaiementSucces';
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/abonnements" element={<Abonnements />} />
       <Route path="/passer-pro" element={<PasserPro />} />
+      <Route path="/paiement/succes" element={<PaiementSucces />} />
     </Routes>
   );
 }

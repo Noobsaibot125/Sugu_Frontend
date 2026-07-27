@@ -315,8 +315,11 @@ export default function TableauDeBord() {
   const [soldeDisponible, setSoldeDisponible] = useState(0);
   const [soldeEnAttente, setSoldeEnAttente] = useState(0);
   const [walletTransactions, setWalletTransactions] = useState([]);
+  const [walletAchats, setWalletAchats] = useState([]);
   const [walletRetraits, setWalletRetraits] = useState([]);
   const [walletRecharges, setWalletRecharges] = useState([]);
+  const [pageVentes, setPageVentes] = useState(1);
+  const [pageAchats, setPageAchats] = useState(1);
 
   // Vlog states
   const [userVlogs, setUserVlogs] = useState([]);
@@ -427,6 +430,7 @@ export default function TableauDeBord() {
       setSoldeDisponible(res.data.solde_disponible);
       setSoldeEnAttente(res.data.solde_en_attente);
       setWalletTransactions(res.data.transactions || []);
+      setWalletAchats(res.data.achats || []);
       setWalletRetraits(res.data.retraits || []);
       setWalletRecharges(res.data.recharges || []);
     } catch (err) {
@@ -450,11 +454,17 @@ export default function TableauDeBord() {
 
   const handleRequestRecharge = async (montant, moyenPaiement, telephone) => {
     try {
-      await client.post('/vendeur/portefeuille/recharge', {
+      const res = await client.post('/vendeur/portefeuille/recharge', {
         montant: Number(montant),
         moyenPaiement,
         telephone
       });
+
+      if (res.data.wave_launch_url) {
+        window.location.href = res.data.wave_launch_url;
+        return;
+      }
+
       triggerToast("Recharge effectuée avec succès !");
       loadWalletDetails();
     } catch (err) {
@@ -681,6 +691,87 @@ export default function TableauDeBord() {
     );
   };
 
+  const profileInputRef = useRef(null);
+
+  const setProfileInputRef = (element) => {
+    profileInputRef.current = element;
+    if (element && window.google && window.google.maps && window.google.maps.places) {
+      const autocomplete = new window.google.maps.places.Autocomplete(element, {
+        types: ['geocode', 'establishment'],
+        componentRestrictions: { country: 'ci' }
+      });
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (!place.address_components) return;
+        const streetAddress = place.formatted_address || place.name || "";
+        setProfileAdresseDetail(streetAddress);
+        for (const component of place.address_components) {
+          if (component.types.includes("sublocality_level_1") || component.types.includes("neighborhood") || component.types.includes("sublocality")) {
+            if (COMMUNES.includes(component.long_name)) {
+              setProfileCommune(component.long_name);
+            }
+          }
+        }
+      });
+    }
+  };
+
+  const handleProfileGeolocate = () => {
+    if (!navigator.geolocation) {
+      alert("La géolocalisation n'est pas supportée par votre navigateur.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          let key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+          if (!key) {
+            const res = await client.get('/config/google-maps-key').catch(() => null);
+            if (res?.data?.key) key = res.data.key;
+          }
+          if (!key) {
+            alert("Clé Google Maps introuvable pour la géolocalisation.");
+            return;
+          }
+
+          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${key}`);
+          const data = await response.json();
+          if (data.results && data.results.length > 0) {
+            const place = data.results.find(r => 
+              r.types.includes("street_address") || 
+              r.types.includes("premise") || 
+              r.types.includes("establishment") || 
+              r.types.includes("route") || 
+              r.types.includes("neighborhood")
+            ) || data.results[0];
+
+            let streetAddress = place.formatted_address || place.name || "";
+            setProfileAdresseDetail(streetAddress);
+
+            for (const component of place.address_components || []) {
+              if (component.types.includes("sublocality_level_1") || component.types.includes("neighborhood") || component.types.includes("sublocality")) {
+                if (COMMUNES.includes(component.long_name)) {
+                  setProfileCommune(component.long_name);
+                }
+              }
+            }
+            triggerToast("Adresse précise récupérée avec succès !");
+          } else {
+            alert("Aucune adresse trouvée pour ces coordonnées.");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Erreur lors de la géolocalisation.");
+        }
+      },
+      (err) => {
+        console.error(err);
+        alert("Accès à la géolocalisation refusé ou indisponible.");
+      }
+    );
+  };
+
   useEffect(() => {
     const loadGoogleMapsScript = async () => {
       if (window.google && window.google.maps && window.google.maps.places) {
@@ -773,14 +864,15 @@ export default function TableauDeBord() {
     return [...dbMessages].reverse().find(m => m.text.startsWith('[LIEN_ACHAT:'));
   }, [dbMessages]);
 
-  const { activeLienId, activeLienStatut, activeLienPrice, hasActiveLien } = useMemo(() => {
-    if (!activeLienMsg) return { activeLienId: null, activeLienStatut: null, activeLienPrice: 0, hasActiveLien: false };
+  const { activeLienId, activeLienStatut, activeLienPrice, hasActiveLien, showTrackingPanel } = useMemo(() => {
+    if (!activeLienMsg) return { activeLienId: null, activeLienStatut: null, activeLienPrice: 0, hasActiveLien: false, showTrackingPanel: false };
     const parts = activeLienMsg.text.replace('[', '').replace(']', '').split(':');
     const id = parts[1];
     const price = parseInt(parts[2], 10) || 0;
     const statut = activeLienMsg.lienStatut;
-    const hasActive = statut === 'cree' || statut === 'attente_vendeur' || statut === 'attente_acheteur' || statut === 'paye' || statut === 'expedie' || statut === 'livre';
-    return { activeLienId: id, activeLienStatut: statut, activeLienPrice: price, hasActiveLien: hasActive };
+    const hasActive = statut === 'cree' || statut === 'attente_vendeur' || statut === 'attente_acheteur' || statut === 'paye' || statut === 'expedie' || statut === 'livre' || statut === 'inconforme';
+    const showTracking = statut === 'cree' || statut === 'attente_vendeur' || statut === 'attente_acheteur' || statut === 'paye' || statut === 'expedie' || statut === 'livre' || statut === 'inconforme' || statut === 'valide' || statut === 'retourne';
+    return { activeLienId: id, activeLienStatut: statut, activeLienPrice: price, hasActiveLien: hasActive, showTrackingPanel: showTracking };
   }, [activeLienMsg]);
 
   // Load conversations
@@ -1067,11 +1159,22 @@ export default function TableauDeBord() {
     if (reason === null) return;
     client.post(`/liens-achat/${lienId}/signaler-probleme`)
       .then(() => {
-        triggerToast("Litige déclaré.");
+        triggerToast("Non-conformité signalée. Veuillez rapporter l'article au vendeur.");
         loadActiveMessages();
         client.get(`/liens-achat/${lienId}`).then(res => setActiveLienDetails(res.data));
       })
       .catch(err => alert(err.response?.data?.message || "Erreur de signalement."));
+  };
+
+  const handleConfirmReturn = (lienId) => {
+    if (!window.confirm("Confirmez-vous avoir bien reçu le retour de l'article non conforme ? Cette action remettra les fonds à l'acheteur.")) return;
+    client.post(`/liens-achat/${lienId}/confirmer-retour`)
+      .then(() => {
+        triggerToast("Retour confirmé et acheteur remboursé !");
+        loadActiveMessages();
+        client.get(`/liens-achat/${lienId}`).then(res => setActiveLienDetails(res.data));
+      })
+      .catch(err => alert(err.response?.data?.message || "Erreur lors de la confirmation du retour."));
   };
 
   // Fallback demo user info if not logged in
@@ -1095,7 +1198,7 @@ export default function TableauDeBord() {
   }, [user]);
 
   const renderTrackingPanel = () => {
-    if (!hasActiveLien || !activeLienDetails) return null;
+    if (!showTrackingPanel || !activeLienDetails) return null;
 
     const isVendeur = activeConvo.vendeur_id === user?.id;
     const isRetrait = activeLienDetails.mode_reception === 'retrait';
@@ -1127,7 +1230,8 @@ export default function TableauDeBord() {
                 {activeLienStatut === 'paye' && 'Rendez-vous planifié'}
                 {activeLienStatut === 'livre' && 'Article remis'}
                 {activeLienStatut === 'valide' && 'Transaction Finalisée'}
-                {activeLienStatut === 'inconforme' && 'Litige ouvert'}
+                {activeLienStatut === 'inconforme' && 'Non conforme (En attente de retour)'}
+                {activeLienStatut === 'retourne' && 'Retourné & Remboursé'}
               </span>
             </div>
             <button
@@ -1170,7 +1274,8 @@ export default function TableauDeBord() {
                 {activeLienStatut === 'paye' && 'Rendez-vous planifié'}
                 {activeLienStatut === 'livre' && 'Article remis (Validation en cours)'}
                 {activeLienStatut === 'valide' && 'Transaction Finalisée'}
-                {activeLienStatut === 'inconforme' && 'Litige ouvert'}
+                {activeLienStatut === 'inconforme' && 'Non conforme (En attente de retour)'}
+                {activeLienStatut === 'retourne' && 'Retourné & Remboursé'}
               </span>
             </div>
             <button
@@ -1633,8 +1738,43 @@ export default function TableauDeBord() {
 
           {/* 4. LITIGE (inconforme) */}
           {activeLienStatut === 'inconforme' && (
-            <div style={{ fontSize: '12.5px', color: '#C0512E', fontWeight: '500' }}>
-              ⚠️ Litige en cours. Les fonds restent bloqués de manière sécurisée en attendant l'avis d'un administrateur.
+            isVendeur ? (
+              <div style={{ background: '#FFF1F0', border: '1px solid #FFA39E', borderRadius: '8px', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ fontSize: '12.5px', color: '#C0512E', fontWeight: 'bold' }}>
+                  ⚠️ L'acheteur a signalé l'article comme non conforme et doit vous le rapporter.
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--sugu-ink-soft)' }}>
+                  Une fois l'article réceptionné, confirmez le retour pour effectuer le remboursement.
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleConfirmReturn(activeLienId)}
+                  style={{
+                    alignSelf: 'flex-start',
+                    background: '#C0512E',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '6px 14px',
+                    fontSize: '11.5px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer'
+                  }}
+                >
+                  📦 Confirmer la réception du retour
+                </button>
+              </div>
+            ) : (
+              <div style={{ fontSize: '12.5px', color: '#C0512E', fontWeight: '500' }}>
+                ⚠️ Non conforme : Veuillez rapporter l'article au vendeur. Dès que le vendeur aura confirmé la réception du retour, vous serez remboursé.
+              </div>
+            )
+          )}
+
+          {/* 5. RETOURNE */}
+          {activeLienStatut === 'retourne' && (
+            <div style={{ fontSize: '12.5px', color: '#106C62', fontWeight: 'bold' }}>
+              📦 Article retourné au vendeur et acheteur remboursé avec succès.
             </div>
           )}
         </div>
@@ -1665,7 +1805,8 @@ export default function TableauDeBord() {
             {activeLienStatut === 'expedie' && 'Expédié (En route)'}
             {activeLienStatut === 'livre' && 'Livré (Vérification)'}
             {activeLienStatut === 'valide' && 'Validé (Fonds libérés)'}
-            {activeLienStatut === 'inconforme' && 'Litige (Non conforme)'}
+            {activeLienStatut === 'inconforme' && 'Non conforme (En attente de retour)'}
+            {activeLienStatut === 'retourne' && 'Retourné & Remboursé'}
           </span>
         </div>
 
@@ -1842,10 +1983,45 @@ export default function TableauDeBord() {
           </div>
         )}
 
-        {/* 5. INCONFORME : Litige déclaré */}
+        {/* 5. INCONFORME : Litige / Retour déclaré */}
         {activeLienStatut === 'inconforme' && (
-          <div style={{ fontSize: '12.5px', color: '#C0512E', fontWeight: '500', lineHeight: 1.4 }}>
-            ⚠️ Un problème de conformité a été signalé sur cette commande. Le paiement est suspendu. Notre service client Sugu va examiner la situation pour procéder au remboursement ou déblocage.
+          isVendeur ? (
+            <div style={{ background: '#FFF1F0', border: '1px solid #FFA39E', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ fontSize: '13px', color: '#C0512E', fontWeight: 'bold' }}>
+                ⚠️ L'acheteur a signalé l'article comme non conforme et doit vous le rapporter.
+              </div>
+              <div style={{ fontSize: '12.5px', color: 'var(--sugu-ink-soft)', lineHeight: 1.4 }}>
+                Une fois l'article retourné et entre vos mains, veuillez cliquer ci-dessous pour valider le retour et rembourser l'acheteur.
+              </div>
+              <button
+                type="button"
+                onClick={() => handleConfirmReturn(activeLienId)}
+                style={{
+                  alignSelf: 'flex-start',
+                  background: '#C0512E',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 16px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                📦 Confirmer la réception du retour
+              </button>
+            </div>
+          ) : (
+            <div style={{ background: '#FFF1F0', border: '1px solid #FFA39E', borderRadius: '8px', padding: '12px', fontSize: '12.5px', color: '#C0512E', lineHeight: 1.4 }}>
+              🚚 <b>Article non conforme :</b> Veuillez rapporter ou retourner le colis au vendeur. Dès que le vendeur aura confirmé la réception du retour, vos fonds vous seront intégralement remboursés sur votre portefeuille Sugu.
+            </div>
+          )
+        )}
+
+        {/* 6. RETOURNE : Finalisé avec remboursement */}
+        {activeLienStatut === 'retourne' && (
+          <div style={{ background: '#E6F7F0', border: '1px solid #B7EB8F', borderRadius: '8px', padding: '12px', fontSize: '12.5px', color: '#106C62', lineHeight: 1.4, fontWeight: '500' }}>
+            📦 <b>Retour confirmé :</b> Le vendeur a bien réceptionné le retour de l'article non conforme. L'acheteur a été intégralement remboursé sur son portefeuille Sugu.
           </div>
         )}
       </div>
@@ -2831,7 +3007,7 @@ export default function TableauDeBord() {
                                     L'achat a été effectué ! En tant que vendeur, vous avez l'<b>obligation d'emballer le colis dans un carton</b> et d'y coller l'étiquette d'expédition contenant les informations de livraison.
                                   </p>
                                   <a 
-                                    href={`http://localhost:4000/api/liens-achat/${systemLienId}/etiquette`} 
+                                    href={`/api/liens-achat/${systemLienId}/etiquette`} 
                                     target="_blank" 
                                     rel="noreferrer"
                                     style={{
@@ -3721,15 +3897,38 @@ export default function TableauDeBord() {
                 </div>
 
                 <div className="sugu-publish-page__field" style={{ marginBottom: '20px' }}>
-                  <label className="sugu-publish-page__label" style={{ fontSize: '13px', marginBottom: '6px' }}>Adresse détaillée</label>
-                  <input
-                    type="text"
-                    className="sugu-search-page__price-input"
-                    value={profileAdresseDetail}
-                    onChange={(e) => setProfileAdresseDetail(e.target.value)}
-                    style={{ fontSize: '14px', padding: '12px 14px' }}
-                    placeholder="Ex : Angré 8e Tranche, à côté de la pharmacie"
-                  />
+                  <label className="sugu-publish-page__label" style={{ fontSize: '13px', marginBottom: '6px' }}>Adresse précise / détaillée</label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <input
+                      type="text"
+                      ref={setProfileInputRef}
+                      className="sugu-search-page__price-input"
+                      value={profileAdresseDetail}
+                      onChange={(e) => setProfileAdresseDetail(e.target.value)}
+                      style={{ fontSize: '14px', padding: '12px 14px', flex: 1 }}
+                      placeholder="Ex : Angré 8e Tranche, à côté de la pharmacie"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleProfileGeolocate}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '12px 16px',
+                        background: 'var(--sugu-primary)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        fontSize: '13.5px',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      📍 Me localiser
+                    </button>
+                  </div>
                 </div>
 
                 {/* Save personal info */}
@@ -4589,10 +4788,10 @@ export default function TableauDeBord() {
                               borderRadius: '4px',
                               fontSize: '11px',
                               fontWeight: 'bold',
-                              background: '#E6F7F0',
-                              color: '#389E0D'
+                              background: r.statut === 'valide' ? '#E6F7F0' : r.statut === 'en_attente' ? '#FFF7E6' : '#FFF1F0',
+                              color: r.statut === 'valide' ? '#389E0D' : r.statut === 'en_attente' ? '#D46B08' : '#CF1322'
                             }}>
-                              Succès
+                              {r.statut === 'valide' ? 'Succès' : r.statut === 'en_attente' ? 'En attente ⏳' : 'Échoué'}
                             </span>
                           </td>
                         </tr>
@@ -4613,45 +4812,149 @@ export default function TableauDeBord() {
                   Aucune vente sécurisée enregistrée.
                 </div>
               ) : (
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
-                    <thead>
-                      <tr style={{ borderBottom: '2px solid var(--sugu-border)', color: 'var(--sugu-ink-soft)' }}>
-                        <th style={{ padding: '10px 8px' }}>Date</th>
-                        <th style={{ padding: '10px 8px' }}>ID</th>
-                        <th style={{ padding: '10px 8px' }}>Annonce</th>
-                        <th style={{ padding: '10px 8px' }}>Total Client</th>
-                        <th style={{ padding: '10px 8px' }}>Commission</th>
-                        <th style={{ padding: '10px 8px' }}>Votre Part Net</th>
-                        <th style={{ padding: '10px 8px' }}>Statut</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {walletTransactions.map(t => (
-                        <tr key={t.id} style={{ borderBottom: '1px solid var(--sugu-border)' }}>
-                          <td style={{ padding: '10px 8px' }}>{new Date(t.date_creation).toLocaleDateString('fr-FR')}</td>
-                          <td style={{ padding: '10px 8px' }}>#{t.id}</td>
-                          <td style={{ padding: '10px 8px', fontWeight: 'bold' }}>{t.ad_title}</td>
-                          <td style={{ padding: '10px 8px' }}>{Number(t.montant_total).toLocaleString('fr-FR')} F</td>
-                          <td style={{ padding: '10px 8px', color: '#C0512E' }}>-{Number(t.commission_montant).toLocaleString('fr-FR')} F</td>
-                          <td style={{ padding: '10px 8px', color: 'var(--sugu-primary)', fontWeight: 'bold' }}>{Number(t.montant_vendeur).toLocaleString('fr-FR')} F</td>
-                          <td style={{ padding: '10px 8px' }}>
-                            <span style={{
-                              padding: '2px 8px',
-                              borderRadius: '4px',
-                              fontSize: '11px',
-                              fontWeight: 'bold',
-                              background: t.statut === 'paye' ? '#FFF7E6' : t.statut === 'livre' ? '#E6F7F0' : '#FFF1F0',
-                              color: t.statut === 'paye' ? '#FA8C16' : t.statut === 'livre' ? '#389E0D' : '#F5222D'
-                            }}>
-                              {t.statut}
-                            </span>
-                          </td>
+                <>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--sugu-border)', color: 'var(--sugu-ink-soft)' }}>
+                          <th style={{ padding: '10px 8px' }}>Date</th>
+                          <th style={{ padding: '10px 8px' }}>ID</th>
+                          <th style={{ padding: '10px 8px' }}>Annonce</th>
+                          <th style={{ padding: '10px 8px' }}>Total Client</th>
+                          <th style={{ padding: '10px 8px' }}>Commission</th>
+                          <th style={{ padding: '10px 8px' }}>Votre Part Net</th>
+                          <th style={{ padding: '10px 8px' }}>Statut</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {walletTransactions.slice((pageVentes - 1) * 5, pageVentes * 5).map(t => (
+                          <tr key={t.id} style={{ borderBottom: '1px solid var(--sugu-border)' }}>
+                            <td style={{ padding: '10px 8px' }}>{new Date(t.date_creation).toLocaleDateString('fr-FR')}</td>
+                            <td style={{ padding: '10px 8px' }}>#{t.id}</td>
+                            <td style={{ padding: '10px 8px', fontWeight: 'bold' }}>{t.ad_title}</td>
+                            <td style={{ padding: '10px 8px' }}>{Number(t.montant_total).toLocaleString('fr-FR')} F</td>
+                            <td style={{ padding: '10px 8px', color: '#C0512E' }}>-{Number(t.commission_montant).toLocaleString('fr-FR')} F</td>
+                            <td style={{ padding: '10px 8px', color: 'var(--sugu-primary)', fontWeight: 'bold' }}>{Number(t.montant_vendeur).toLocaleString('fr-FR')} F</td>
+                            <td style={{ padding: '10px 8px' }}>
+                              <span style={{
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                background: t.statut === 'paye' ? '#FFF7E6' : t.statut === 'livre' ? '#E6F7F0' : '#FFF1F0',
+                                color: t.statut === 'paye' ? '#FA8C16' : t.statut === 'livre' ? '#389E0D' : '#F5222D'
+                              }}>
+                                {t.statut}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {walletTransactions.length > 5 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid var(--sugu-border)' }}>
+                      <button
+                        type="button"
+                        disabled={pageVentes === 1}
+                        onClick={() => setPageVentes(p => Math.max(1, p - 1))}
+                        style={{ padding: '6px 14px', fontSize: '13px', borderRadius: '6px', border: '1px solid var(--sugu-border)', background: pageVentes === 1 ? '#f5f5f5' : '#fff', cursor: pageVentes === 1 ? 'not-allowed' : 'pointer', fontWeight: 600 }}
+                      >
+                        ◄ Précédent
+                      </button>
+                      <span style={{ fontSize: '13px', color: 'var(--sugu-ink-soft)', fontWeight: 600 }}>
+                        Page {pageVentes} sur {Math.ceil(walletTransactions.length / 5)} ({walletTransactions.length} ventes)
+                      </span>
+                      <button
+                        type="button"
+                        disabled={pageVentes >= Math.ceil(walletTransactions.length / 5)}
+                        onClick={() => setPageVentes(p => p + 1)}
+                        style={{ padding: '6px 14px', fontSize: '13px', borderRadius: '6px', border: '1px solid var(--sugu-border)', background: pageVentes >= Math.ceil(walletTransactions.length / 5) ? '#f5f5f5' : '#fff', cursor: pageVentes >= Math.ceil(walletTransactions.length / 5) ? 'not-allowed' : 'pointer', fontWeight: 600 }}
+                      >
+                        Suivant ►
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Purchase transactions list */}
+            <div style={{ background: '#FFF', borderRadius: '16px', padding: '30px', border: '1.5px solid var(--sugu-border)', marginTop: '20px' }}>
+              <h3 style={{ fontSize: '17px', fontWeight: 800, margin: '0 0 16px 0', borderBottom: '1px solid #f3f4f6', paddingBottom: '10px' }}>
+                🛒 Historique des Transactions d'Achat
+              </h3>
+              {walletAchats.length === 0 ? (
+                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--sugu-ink-faint)' }}>
+                  Aucun achat sécurisé enregistré.
                 </div>
+              ) : (
+                <>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--sugu-border)', color: 'var(--sugu-ink-soft)' }}>
+                          <th style={{ padding: '10px 8px' }}>Date</th>
+                          <th style={{ padding: '10px 8px' }}>ID</th>
+                          <th style={{ padding: '10px 8px' }}>Annonce</th>
+                          <th style={{ padding: '10px 8px' }}>Vendeur</th>
+                          <th style={{ padding: '10px 8px' }}>Montant Payé</th>
+                          <th style={{ padding: '10px 8px' }}>Paiement</th>
+                          <th style={{ padding: '10px 8px' }}>Statut</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {walletAchats.slice((pageAchats - 1) * 5, pageAchats * 5).map(a => (
+                          <tr key={a.id} style={{ borderBottom: '1px solid var(--sugu-border)' }}>
+                            <td style={{ padding: '10px 8px' }}>{new Date(a.date_creation).toLocaleDateString('fr-FR')}</td>
+                            <td style={{ padding: '10px 8px' }}>#{a.id}</td>
+                            <td style={{ padding: '10px 8px', fontWeight: 'bold' }}>{a.ad_title}</td>
+                            <td style={{ padding: '10px 8px' }}>{a.vendeur_nom || 'Vendeur'}</td>
+                            <td style={{ padding: '10px 8px', fontWeight: 'bold', color: '#106c62' }}>{Number(a.montant_total).toLocaleString('fr-FR')} F</td>
+                            <td style={{ padding: '10px 8px', textTransform: 'capitalize' }}>{a.moyen_paiement || 'Portefeuille'}</td>
+                            <td style={{ padding: '10px 8px' }}>
+                              <span style={{
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                background: a.statut === 'paye' || a.statut === 'en_attente' ? '#FFF7E6' : a.statut === 'livre' ? '#E6F7F0' : a.statut === 'en_livraison' ? '#E6F7FF' : '#FFF1F0',
+                                color: a.statut === 'paye' || a.statut === 'en_attente' ? '#FA8C16' : a.statut === 'livre' ? '#389E0D' : a.statut === 'en_livraison' ? '#1890FF' : '#F5222D'
+                              }}>
+                                {a.statut === 'paye' ? 'payé (séquestre)' : a.statut === 'livre' ? 'livré' : a.statut === 'en_livraison' ? 'en livraison' : a.statut === 'rembourse' ? 'remboursé' : a.statut}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {walletAchats.length > 5 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid var(--sugu-border)' }}>
+                      <button
+                        type="button"
+                        disabled={pageAchats === 1}
+                        onClick={() => setPageAchats(p => Math.max(1, p - 1))}
+                        style={{ padding: '6px 14px', fontSize: '13px', borderRadius: '6px', border: '1px solid var(--sugu-border)', background: pageAchats === 1 ? '#f5f5f5' : '#fff', cursor: pageAchats === 1 ? 'not-allowed' : 'pointer', fontWeight: 600 }}
+                      >
+                        ◄ Précédent
+                      </button>
+                      <span style={{ fontSize: '13px', color: 'var(--sugu-ink-soft)', fontWeight: 600 }}>
+                        Page {pageAchats} sur {Math.ceil(walletAchats.length / 5)} ({walletAchats.length} achats)
+                      </span>
+                      <button
+                        type="button"
+                        disabled={pageAchats >= Math.ceil(walletAchats.length / 5)}
+                        onClick={() => setPageAchats(p => p + 1)}
+                        style={{ padding: '6px 14px', fontSize: '13px', borderRadius: '6px', border: '1px solid var(--sugu-border)', background: pageAchats >= Math.ceil(walletAchats.length / 5) ? '#f5f5f5' : '#fff', cursor: pageAchats >= Math.ceil(walletAchats.length / 5) ? 'not-allowed' : 'pointer', fontWeight: 600 }}
+                      >
+                        Suivant ►
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

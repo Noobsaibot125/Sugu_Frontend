@@ -62,6 +62,7 @@ export default function Publier() {
   const [iaPrompt, setIaPrompt] = useState("");
   const [iaLoading, setIaLoading] = useState(false);
   const [iaSelected, setIaSelected] = useState(false);
+  const [iaStep, setIaStep] = useState(1);
   const [editingField, setEditingField] = useState(null);
 
   // Form states
@@ -1160,7 +1161,7 @@ export default function Publier() {
                     <button
                       type="button"
                       className="sugu-button"
-                      onClick={() => setIaSelected(true)}
+                      onClick={() => { setIaSelected(true); setIaStep(1); }}
                       style={{
                         background: 'linear-gradient(90deg, #6200EE 0%, #8700FF 100%)',
                         color: '#FFF',
@@ -1230,9 +1231,9 @@ export default function Publier() {
               </div>
             )}
 
-            {/* UNIFIED AI STUDIO */}
+            {/* UNIFIED AI STUDIO WITH 2-STEP WIZARD */}
             {step === 0 && iaSelected && (
-              <div className="sugu-ia-studio" style={{ maxWidth: '1000px', margin: '20px auto 0 auto' }}>
+              <div className="sugu-ia-studio" style={{ maxWidth: '900px', margin: '20px auto 0 auto' }}>
                 <style>{`
                   @keyframes sugu-spin {
                     0% { transform: rotate(0deg); }
@@ -1243,10 +1244,18 @@ export default function Publier() {
                     50% { opacity: 0.6; }
                   }
                 `}</style>
+
+                {/* Back Button */}
                 <button
                   type="button"
                   className="sugu-ia-studio__back-btn"
-                  onClick={() => setIaSelected(false)}
+                  onClick={() => {
+                    if (iaStep === 2) {
+                      setIaStep(1);
+                    } else {
+                      setIaSelected(false);
+                    }
+                  }}
                   style={{
                     background: 'none',
                     border: 'none',
@@ -1261,358 +1270,566 @@ export default function Publier() {
                     padding: 0
                   }}
                 >
-                  ◀ Retour aux choix de saisie
+                  ◀ {iaStep === 2 ? "Retour à l'Étape 1 (Photos & Préférences)" : "Retour aux choix de saisie"}
                 </button>
 
-                <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--sugu-ink)', fontFamily: 'var(--sugu-font-heading)', margin: '0 0 6px 0' }}>
-                  Création d'annonce assistée par IA 🪄
-                </h2>
-                <p style={{ fontSize: '14.5px', color: 'var(--sugu-ink-soft)', marginBottom: '32px' }}>
-                  Ajoutez vos photos, spécifiez vos préférences de livraison et de localisation, puis décrivez brièvement votre article. Notre IA rédigera et configurera le reste pour vous.
-                </p>
-
-                <div className="sugu-ia-studio__grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '30px' }}>
-                  
-                  {/* Left Column: Photos & Settings */}
-                  <div className="sugu-ia-studio__settings-col" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    
-                    {/* Photos upload */}
-                    <div className="sugu-publish-page__field">
-                      <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                        <label className="sugu-publish-page__label" style={{ marginBottom: 0 }}>
-                          Photos <span style={{ color: 'var(--sugu-ink-faint)', fontWeight: 400 }}>(la 1ʳᵉ sera la couverture)</span>
-                        </label>
-                        <span style={{ fontFamily: 'var(--sugu-font-mono)', fontSize: '12px', color: 'var(--sugu-ink-faint)' }}>
-                          {photos.length} / 8
-                        </span>
+                {/* Stepper Progress Indicator */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  marginBottom: '24px',
+                  background: '#FFF',
+                  padding: '14px 24px',
+                  borderRadius: '16px',
+                  border: '1.5px solid var(--sugu-border)',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
+                }}>
+                  {/* Step 1 Badge */}
+                  <div
+                    onClick={() => setIaStep(1)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      cursor: 'pointer',
+                      opacity: iaStep === 1 ? 1 : 0.85
+                    }}
+                  >
+                    <span style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: iaStep === 1 ? 'linear-gradient(90deg, #6200EE 0%, #8700FF 100%)' : (iaStep > 1 ? '#389E0D' : '#E0E0E0'),
+                      color: '#FFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: 800,
+                      boxShadow: iaStep === 1 ? '0 3px 10px rgba(98, 0, 238, 0.3)' : 'none'
+                    }}>
+                      {iaStep > 1 ? '✓' : '1'}
+                    </span>
+                    <div>
+                      <div style={{ fontSize: '13.5px', fontWeight: iaStep === 1 ? 800 : 600, color: iaStep === 1 ? '#6200EE' : 'var(--sugu-ink)' }}>
+                        Étape 1 : Médias & Préférences
                       </div>
-
-                      <div
-                        onDrop={handleDrop}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        style={{
-                          borderWidth: '2px',
-                          borderStyle: 'dashed',
-                          borderColor: dragOver ? 'var(--sugu-primary)' : '#DCCFBC',
-                          backgroundColor: dragOver ? '#F7ECE0' : '#FFF',
-                          borderRadius: '18px',
-                          padding: '18px'
-                        }}
-                      >
-                        {photos.length === 0 ? (
-                          <label className="sugu-publish-page__dropzone-label">
-                            <div className="sugu-publish-page__dropzone-icon">📷</div>
-                            <div className="sugu-publish-page__dropzone-title">Glissez vos photos ici</div>
-                            <div className="sugu-publish-page__dropzone-desc">ou cliquez pour parcourir · JPG, PNG · 8 max</div>
-                            <span className="sugu-publish-page__dropzone-btn">Choisir des photos</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              multiple
-                              onChange={(e) => handleFiles(e.target.files)}
-                              style={{ display: 'none' }}
-                            />
-                          </label>
-                        ) : (
-                          <div className="sugu-publish-page__photo-grid">
-                            {photos.map((src, i) => (
-                              <div key={i} className="sugu-publish-page__photo-tile" style={{
-                                borderColor: i === 0 ? 'var(--sugu-primary)' : 'var(--sugu-border)',
-                                borderWidth: '2px',
-                                borderStyle: 'solid'
-                              }}>
-                                <img src={src} alt="Vignette" />
-                                {i === 0 && <span className="sugu-publish-page__photo-cover-badge">★ Couverture</span>}
-                                <button
-                                  type="button"
-                                  className="sugu-publish-page__photo-remove-btn"
-                                  onClick={(e) => handleRemovePhoto(i, e)}
-                                >
-                                  ✕
-                                </button>
-                                <div className="sugu-publish-page__photo-controls">
-                                  <button type="button" className="sugu-publish-page__photo-control-btn" onClick={(e) => handleMovePhoto(i, -1, e)}>
-                                    ◀
-                                  </button>
-                                  {i !== 0 && (
-                                    <button
-                                      type="button"
-                                      className="sugu-publish-page__photo-control-btn sugu-publish-page__photo-control-btn--cover"
-                                      title="Définir comme couverture"
-                                      onClick={(e) => handleSetCover(i, e)}
-                                    >
-                                      ★
-                                    </button>
-                                  )}
-                                  <button type="button" className="sugu-publish-page__photo-control-btn" onClick={(e) => handleMovePhoto(i, 1, e)}>
-                                    ▶
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                            {photos.length < 8 && (
-                              <label className="sugu-publish-page__photo-add-more">
-                                <span style={{ fontSize: '26px' }}>＋</span>
-                                <span style={{ fontSize: '12px', fontWeight: 600 }}>Ajouter</span>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  multiple
-                                  onChange={(e) => handleFiles(e.target.files)}
-                                  style={{ display: 'none' }}
-                                />
-                              </label>
-                            )}
-                          </div>
-                        )}
+                      <div style={{ fontSize: '11.5px', color: 'var(--sugu-ink-faint)' }}>
+                        Photos, localisation, livraison
                       </div>
                     </div>
+                  </div>
 
-                    {/* Commune dropdown */}
-                    <div className="sugu-publish-page__field">
-                      <label className="sugu-publish-page__label">Ville / Commune</label>
-                      <div className="sugu-input-wrapper" style={{ padding: '0 14px', gap: '8px', background: '#FFF' }}>
-                        <span style={{ color: 'var(--sugu-secondary)' }}>📍</span>
-                        <select
-                          value={commune}
-                          onChange={(e) => setCommune(e.target.value)}
+                  <span style={{ color: 'var(--sugu-border)', fontSize: '20px', margin: '0 8px' }}>➔</span>
+
+                  {/* Step 2 Badge */}
+                  <div
+                    onClick={() => setIaStep(2)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      cursor: 'pointer',
+                      opacity: iaStep === 2 ? 1 : 0.65
+                    }}
+                  >
+                    <span style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: iaStep === 2 ? 'linear-gradient(90deg, #6200EE 0%, #8700FF 100%)' : '#E0E0E0',
+                      color: '#FFF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: 800,
+                      boxShadow: iaStep === 2 ? '0 3px 10px rgba(98, 0, 238, 0.3)' : 'none'
+                    }}>
+                      2
+                    </span>
+                    <div>
+                      <div style={{ fontSize: '13.5px', fontWeight: iaStep === 2 ? 800 : 600, color: iaStep === 2 ? '#6200EE' : 'var(--sugu-ink-soft)' }}>
+                        Étape 2 : Description & Génération IA
+                      </div>
+                      <div style={{ fontSize: '11.5px', color: 'var(--sugu-ink-faint)' }}>
+                        Description libre et rédaction IA
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ===== IA STEP 1 : PHOTOS & PREFERENCES ===== */}
+                {iaStep === 1 && (
+                  <div style={{ background: '#FFF', borderRadius: '24px', padding: '35px', border: '1.5px solid var(--sugu-border)', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+                    <h2 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--sugu-ink)', fontFamily: 'var(--sugu-font-heading)', margin: '0 0 6px 0' }}>
+                      Étape 1 : Photos, Localisation & Livraison 📸
+                    </h2>
+                    <p style={{ fontSize: '14px', color: 'var(--sugu-ink-soft)', marginBottom: '28px' }}>
+                      Importez vos visuels et indiquez vos préférences. Vous ajouterez ensuite la description à l'étape suivante.
+                    </p>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                      {/* Photos upload */}
+                      <div className="sugu-publish-page__field">
+                        <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                          <label className="sugu-publish-page__label" style={{ marginBottom: 0 }}>
+                            Photos <span style={{ color: 'var(--sugu-ink-faint)', fontWeight: 400 }}>(la 1ʳᵉ sera la couverture)</span>
+                          </label>
+                          <span style={{ fontFamily: 'var(--sugu-font-mono)', fontSize: '12px', color: 'var(--sugu-ink-faint)' }}>
+                            {photos.length} / 8
+                          </span>
+                        </div>
+
+                        <div
+                          onDrop={handleDrop}
+                          onDragOver={handleDragOver}
+                          onDragLeave={handleDragLeave}
                           style={{
-                            flex: 1,
-                            border: 'none',
-                            outline: 'none',
-                            background: 'transparent',
-                            fontSize: '15px',
-                            color: 'var(--sugu-ink)',
-                            padding: '13px 4px',
-                            cursor: 'pointer'
+                            borderWidth: '2px',
+                            borderStyle: 'dashed',
+                            borderColor: dragOver ? 'var(--sugu-primary)' : '#DCCFBC',
+                            backgroundColor: dragOver ? '#F7ECE0' : '#FFF',
+                            borderRadius: '18px',
+                            padding: '24px'
                           }}
                         >
-                          <option value="">Choisir une commune…</option>
-                          {(COMMUNES.includes(commune) || !commune ? COMMUNES : [...COMMUNES, commune]).map(c => (
-                            <option key={c} value={c}>
-                              {c === commune && ville && ville !== "Abidjan" && ville !== commune ? `${c} (${ville})` : c}
-                            </option>
-                          ))}
-                        </select>
+                          {photos.length === 0 ? (
+                            <label className="sugu-publish-page__dropzone-label">
+                              <div className="sugu-publish-page__dropzone-icon" style={{ fontSize: '36px', marginBottom: '10px' }}>📷</div>
+                              <div className="sugu-publish-page__dropzone-title" style={{ fontSize: '16px', fontWeight: 800 }}>Glissez vos photos ici</div>
+                              <div className="sugu-publish-page__dropzone-desc" style={{ fontSize: '13px', margin: '4px 0 16px 0' }}>ou cliquez pour parcourir · JPG, PNG · 8 max</div>
+                              <span className="sugu-publish-page__dropzone-btn" style={{ background: 'var(--sugu-primary)', color: '#fff', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold' }}>Choisir des photos</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={(e) => handleFiles(e.target.files)}
+                                style={{ display: 'none' }}
+                              />
+                            </label>
+                          ) : (
+                            <div className="sugu-publish-page__photo-grid">
+                              {photos.map((src, i) => (
+                                <div key={i} className="sugu-publish-page__photo-tile" style={{
+                                  borderColor: i === 0 ? 'var(--sugu-primary)' : 'var(--sugu-border)',
+                                  borderWidth: '2px',
+                                  borderStyle: 'solid'
+                                }}>
+                                  <img src={src} alt="Vignette" />
+                                  {i === 0 && <span className="sugu-publish-page__photo-cover-badge">★ Couverture</span>}
+                                  <button
+                                    type="button"
+                                    className="sugu-publish-page__photo-remove-btn"
+                                    onClick={(e) => handleRemovePhoto(i, e)}
+                                  >
+                                    ✕
+                                  </button>
+                                  <div className="sugu-publish-page__photo-controls">
+                                    <button type="button" className="sugu-publish-page__photo-control-btn" onClick={(e) => handleMovePhoto(i, -1, e)}>
+                                      ◀
+                                    </button>
+                                    {i !== 0 && (
+                                      <button
+                                        type="button"
+                                        className="sugu-publish-page__photo-control-btn sugu-publish-page__photo-control-btn--cover"
+                                        title="Définir comme couverture"
+                                        onClick={(e) => handleSetCover(i, e)}
+                                      >
+                                        ★
+                                      </button>
+                                    )}
+                                    <button type="button" className="sugu-publish-page__photo-control-btn" onClick={(e) => handleMovePhoto(i, 1, e)}>
+                                      ▶
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                              {photos.length < 8 && (
+                                <label className="sugu-publish-page__photo-add-more">
+                                  <span style={{ fontSize: '26px' }}>＋</span>
+                                  <span style={{ fontSize: '12px', fontWeight: 600 }}>Ajouter</span>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={(e) => handleFiles(e.target.files)}
+                                    style={{ display: 'none' }}
+                                  />
+                                </label>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Delivery Options */}
-                    <div className="sugu-publish-page__field">
-                      <label className="sugu-publish-page__label" style={{ marginBottom: '2px' }}>Mode de livraison</label>
-                      <div style={{ fontSize: '12px', color: 'var(--sugu-ink-faint)', marginBottom: '10px' }}>
-                        Optionnel · Ignoré pour l'immobilier, les services et l'emploi
-                      </div>
-                      <div className="sugu-publish-page__options-wrap">
-                        {[
-                          { v: "main", icon: "🤝", label: "En main propre" },
-                          { v: "livraison", icon: "🚚", label: "Livraison" },
-                          { v: "both", icon: "✨", label: "Les deux" }
-                        ].map(d => {
-                          const isSelected = delivery === d.v;
-                          return (
-                            <div
-                              key={d.v}
-                              className="sugu-publish-page__tile"
-                              onClick={() => setDelivery(d.v)}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+                        {/* Commune dropdown */}
+                        <div className="sugu-publish-page__field">
+                          <label className="sugu-publish-page__label">Ville / Commune</label>
+                          <div className="sugu-input-wrapper" style={{ padding: '0 14px', gap: '8px', background: '#FFF' }}>
+                            <span style={{ color: 'var(--sugu-secondary)' }}>📍</span>
+                            <select
+                              value={commune}
+                              onChange={(e) => setCommune(e.target.value)}
                               style={{
                                 flex: 1,
-                                backgroundColor: isSelected ? '#F7ECE0' : '#FFF',
-                                borderColor: isSelected ? 'var(--sugu-primary)' : 'var(--sugu-border)',
-                                borderWidth: '1.5px',
-                                borderStyle: 'solid',
-                                padding: '12px 6px',
-                                minHeight: 'auto',
+                                border: 'none',
+                                outline: 'none',
+                                background: 'transparent',
+                                fontSize: '15px',
+                                color: 'var(--sugu-ink)',
+                                padding: '13px 4px',
                                 cursor: 'pointer'
                               }}
                             >
-                              <span style={{ fontSize: '18px' }}>{d.icon}</span>
-                              <span className="sugu-publish-page__tile-name" style={{ fontSize: '12px', marginTop: '4px' }}>{d.label}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Address Precision Selection for AI Studio */}
-                    <div className="sugu-publish-page__field" style={{ marginTop: '16px' }}>
-                      <label className="sugu-publish-page__label" style={{ marginBottom: '8px' }}>Précision de l'adresse</label>
-                      <div className="sugu-publish-page__address-options">
-                        
-                        {/* Approx Mode */}
-                        <div
-                          className="sugu-publish-page__address-btn"
-                          onClick={() => {
-                            if (delivery === 'main' || delivery === 'both') return;
-                            setAddressMode("approx");
-                          }}
-                          style={{
-                            backgroundColor: addressMode === "approx" ? '#F7ECE0' : '#FFF',
-                            borderColor: addressMode === "approx" ? 'var(--sugu-primary)' : 'var(--sugu-border)',
-                            opacity: (delivery === 'main' || delivery === 'both') ? 0.45 : 1,
-                            cursor: (delivery === 'main' || delivery === 'both') ? 'not-allowed' : 'pointer',
-                            pointerEvents: (delivery === 'main' || delivery === 'both') ? 'none' : 'auto',
-                            padding: '10px 12px'
-                          }}
-                        >
-                          <span className="sugu-publish-page__address-ring" style={{ borderColor: addressMode === "approx" ? 'var(--sugu-primary)' : 'var(--sugu-border)' }}>
-                            <span className="sugu-publish-page__address-dot" style={{ backgroundColor: addressMode === "approx" ? 'var(--sugu-primary)' : 'transparent' }} />
-                          </span>
-                          <div>
-                            <div style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--sugu-ink)' }}>Zone approximative</div>
+                              <option value="">Choisir une commune…</option>
+                              {(COMMUNES.includes(commune) || !commune ? COMMUNES : [...COMMUNES, commune]).map(c => (
+                                <option key={c} value={c}>
+                                  {c === commune && ville && ville !== "Abidjan" && ville !== commune ? `${c} (${ville})` : c}
+                                </option>
+                              ))}
+                            </select>
                           </div>
                         </div>
 
-                        {/* Precise Mode */}
-                        <div
-                          className="sugu-publish-page__address-btn"
-                          onClick={() => setAddressMode("precise")}
-                          style={{
-                            backgroundColor: addressMode === "precise" ? '#F7ECE0' : '#FFF',
-                            borderColor: addressMode === "precise" ? 'var(--sugu-primary)' : 'var(--sugu-border)',
-                            padding: '10px 12px'
-                          }}
-                        >
-                          <span className="sugu-publish-page__address-ring" style={{ borderColor: addressMode === "precise" ? 'var(--sugu-primary)' : 'var(--sugu-border)' }}>
-                            <span className="sugu-publish-page__address-dot" style={{ backgroundColor: addressMode === "precise" ? 'var(--sugu-primary)' : 'transparent' }} />
-                          </span>
-                          <div>
-                            <div style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--sugu-ink)' }}>Adresse précise</div>
+                        {/* Delivery Options */}
+                        <div className="sugu-publish-page__field">
+                          <label className="sugu-publish-page__label" style={{ marginBottom: '2px' }}>Mode de livraison</label>
+                          <div style={{ fontSize: '12px', color: 'var(--sugu-ink-faint)', marginBottom: '8px' }}>
+                            Ignoré pour l'immobilier, les services et l'emploi
+                          </div>
+                          <div className="sugu-publish-page__options-wrap" style={{ display: 'flex', gap: '8px' }}>
+                            {[
+                              { v: "main", icon: "🤝", label: "En main propre" },
+                              { v: "livraison", icon: "🚚", label: "Livraison" },
+                              { v: "both", icon: "✨", label: "Les deux" }
+                            ].map(d => {
+                              const isSelected = delivery === d.v;
+                              return (
+                                <div
+                                  key={d.v}
+                                  className="sugu-publish-page__tile"
+                                  onClick={() => setDelivery(d.v)}
+                                  style={{
+                                    flex: 1,
+                                    backgroundColor: isSelected ? '#F7ECE0' : '#FFF',
+                                    borderColor: isSelected ? 'var(--sugu-primary)' : 'var(--sugu-border)',
+                                    borderWidth: '1.5px',
+                                    borderStyle: 'solid',
+                                    padding: '10px 4px',
+                                    cursor: 'pointer',
+                                    textAlign: 'center'
+                                  }}
+                                >
+                                  <span style={{ fontSize: '18px' }}>{d.icon}</span>
+                                  <span className="sugu-publish-page__tile-name" style={{ fontSize: '11.5px', marginTop: '2px', display: 'block' }}>{d.label}</span>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
-
                       </div>
 
-                      {(delivery === 'main' || delivery === 'both') && (
-                        <div style={{ fontSize: '11.5px', color: '#D4380D', marginTop: '6px', fontWeight: 500 }}>
-                          💡 L'adresse précise est requise pour la remise en main propre.
-                        </div>
-                      )}
-
-                      {addressMode === "precise" && (
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-                          <input
-                            type="text"
-                            ref={setInputRef}
-                            className="sugu-input"
-                            style={{ flex: 1, marginTop: 0, padding: '10px 12px', fontSize: '13px', background: '#FFF' }}
-                            placeholder="Ex : Angré 8e Tranche, près de la pharmacie…"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                          />
-                          <button
-                            type="button"
-                            onClick={handleGeolocate}
-                            title="Me géolocaliser"
+                      {/* Address Precision */}
+                      <div className="sugu-publish-page__field">
+                        <label className="sugu-publish-page__label" style={{ marginBottom: '8px' }}>Précision de l'adresse</label>
+                        <div className="sugu-publish-page__address-options">
+                          <div
+                            className="sugu-publish-page__address-btn"
+                            onClick={() => {
+                              if (delivery === 'main' || delivery === 'both') return;
+                              setAddressMode("approx");
+                            }}
                             style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: '4px',
-                              padding: '10px 14px',
-                              background: 'var(--sugu-primary)',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: '8px',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              fontSize: '13px',
-                              whiteSpace: 'nowrap'
+                              backgroundColor: addressMode === "approx" ? '#F7ECE0' : '#FFF',
+                              borderColor: addressMode === "approx" ? 'var(--sugu-primary)' : 'var(--sugu-border)',
+                              opacity: (delivery === 'main' || delivery === 'both') ? 0.45 : 1,
+                              cursor: (delivery === 'main' || delivery === 'both') ? 'not-allowed' : 'pointer',
+                              padding: '10px 12px'
                             }}
                           >
-                            📍 Me localiser
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                            <span className="sugu-publish-page__address-ring" style={{ borderColor: addressMode === "approx" ? 'var(--sugu-primary)' : 'var(--sugu-border)' }}>
+                              <span className="sugu-publish-page__address-dot" style={{ backgroundColor: addressMode === "approx" ? 'var(--sugu-primary)' : 'transparent' }} />
+                            </span>
+                            <div>
+                              <div style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--sugu-ink)' }}>Zone approximative</div>
+                            </div>
+                          </div>
 
-                    {/* Price Negotiable Option */}
-                    <div className="sugu-publish-page__field" style={{ marginTop: '16px' }}>
-                      <label className="sugu-publish-page__label" style={{ marginBottom: '8px' }}>Négociabilité</label>
-                      <div 
-                        className="sugu-publish-page__checkbox-row" 
-                        onClick={() => setNegotiable(!negotiable)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          padding: '12px 14px',
-                          border: '1.5px solid var(--sugu-border)',
-                          borderRadius: '12px',
-                          background: '#FFF',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <span 
-                          className="sugu-publish-page__checkbox" 
+                          <div
+                            className="sugu-publish-page__address-btn"
+                            onClick={() => setAddressMode("precise")}
+                            style={{
+                              backgroundColor: addressMode === "precise" ? '#F7ECE0' : '#FFF',
+                              borderColor: addressMode === "precise" ? 'var(--sugu-primary)' : 'var(--sugu-border)',
+                              padding: '10px 12px'
+                            }}
+                          >
+                            <span className="sugu-publish-page__address-ring" style={{ borderColor: addressMode === "precise" ? 'var(--sugu-primary)' : 'var(--sugu-border)' }}>
+                              <span className="sugu-publish-page__address-dot" style={{ backgroundColor: addressMode === "precise" ? 'var(--sugu-primary)' : 'transparent' }} />
+                            </span>
+                            <div>
+                              <div style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--sugu-ink)' }}>Adresse précise</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {addressMode === "precise" && (
+                          <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+                            <input
+                              type="text"
+                              ref={setInputRef}
+                              className="sugu-input"
+                              style={{ flex: 1, marginTop: 0, padding: '10px 12px', fontSize: '13px', background: '#FFF' }}
+                              placeholder="Ex : Angré 8e Tranche, près de la pharmacie…"
+                              value={address}
+                              onChange={(e) => setAddress(e.target.value)}
+                            />
+                            <button
+                              type="button"
+                              onClick={handleGeolocate}
+                              title="Me géolocaliser"
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '4px',
+                                padding: '10px 14px',
+                                background: 'var(--sugu-primary)',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                fontSize: '13px',
+                                whiteSpace: 'nowrap'
+                              }}
+                            >
+                              📍 Me localiser
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Negotiable Option */}
+                      <div className="sugu-publish-page__field">
+                        <label className="sugu-publish-page__label" style={{ marginBottom: '8px' }}>Négociabilité</label>
+                        <div
+                          className="sugu-publish-page__checkbox-row"
+                          onClick={() => setNegotiable(!negotiable)}
                           style={{
-                            borderColor: negotiable ? 'var(--sugu-primary)' : 'var(--sugu-border)',
-                            backgroundColor: negotiable ? 'var(--sugu-primary)' : 'transparent',
-                            margin: 0
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px 14px',
+                            border: '1.5px solid var(--sugu-border)',
+                            borderRadius: '12px',
+                            background: '#FFF',
+                            cursor: 'pointer'
                           }}
                         >
-                          {negotiable ? '✓' : ''}
-                        </span>
-                        <span style={{ fontSize: '14px', color: 'var(--sugu-ink)', fontWeight: 600 }}>
-                          Le prix est négociable
-                        </span>
+                          <span
+                            className="sugu-publish-page__checkbox"
+                            style={{
+                              borderColor: negotiable ? 'var(--sugu-primary)' : 'var(--sugu-border)',
+                              backgroundColor: negotiable ? 'var(--sugu-primary)' : 'transparent',
+                              margin: 0
+                            }}
+                          >
+                            {negotiable ? '✓' : ''}
+                          </span>
+                          <span style={{ fontSize: '14px', color: 'var(--sugu-ink)', fontWeight: 600 }}>
+                            Le prix est négociable
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Continue to Step 2 Button */}
+                      <button
+                        type="button"
+                        className="sugu-button"
+                        onClick={() => setIaStep(2)}
+                        style={{
+                          background: 'linear-gradient(90deg, #6200EE 0%, #8700FF 100%)',
+                          color: '#FFF',
+                          border: 'none',
+                          padding: '15px 24px',
+                          borderRadius: '12px',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          fontSize: '15.5px',
+                          boxShadow: '0 4px 15px rgba(98, 0, 238, 0.2)',
+                          marginTop: '10px'
+                        }}
+                      >
+                        Continuer vers la description (Étape 2) ➔
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* ===== IA STEP 2 : DESCRIPTION & AI GENERATION ===== */}
+                {iaStep === 2 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+                    
+                    {/* Left Column: Recap of Step 1 */}
+                    <div style={{
+                      background: '#FFF',
+                      borderRadius: '20px',
+                      padding: '24px',
+                      border: '1.5px solid var(--sugu-border)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '16px',
+                      alignSelf: 'flex-start'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--sugu-ink)', margin: 0 }}>
+                          📋 Récapitulatif Étape 1
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => setIaStep(1)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#6200EE',
+                            fontWeight: 700,
+                            fontSize: '12.5px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Modifier ✏️
+                        </button>
+                      </div>
+
+                      {/* Photos Thumbnail Preview */}
+                      {photos.length > 0 ? (
+                        <div>
+                          <div style={{ fontSize: '12px', color: 'var(--sugu-ink-soft)', marginBottom: '8px', fontWeight: 600 }}>
+                            📷 Photos ({photos.length})
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+                            {photos.slice(0, 4).map((src, i) => (
+                              <img
+                                key={i}
+                                src={src}
+                                alt="preview"
+                                style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px', border: i === 0 ? '2px solid var(--sugu-primary)' : '1px solid var(--sugu-border)' }}
+                              />
+                            ))}
+                            {photos.length > 4 && (
+                              <div style={{ width: '48px', height: '48px', borderRadius: '8px', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, color: 'var(--sugu-ink-soft)' }}>
+                                +{photos.length - 4}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: '13px', color: 'var(--sugu-ink-faint)', fontStyle: 'italic' }}>
+                          📷 Aucune photo ajoutée
+                        </div>
+                      )}
+
+                      {/* Location */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px' }}>
+                        <span>📍</span>
+                        <span><strong>Localisation :</strong> {commune || 'Abidjan'} {addressMode === 'precise' && address ? `(${address})` : ''}</span>
+                      </div>
+
+                      {/* Delivery */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px' }}>
+                        <span>🚚</span>
+                        <span><strong>Livraison :</strong> {delivery === 'main' ? 'En main propre' : delivery === 'livraison' ? 'Livraison' : delivery === 'both' ? 'En main propre & Livraison' : 'Non spécifié'}</span>
+                      </div>
+
+                      {/* Negotiable */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px' }}>
+                        <span>🏷️</span>
+                        <span><strong>Prix négociable :</strong> {negotiable ? 'Oui' : 'Non'}</span>
                       </div>
                     </div>
 
-                  </div>
-
-                  {/* Right Column: AI Prompt Textarea & Generation */}
-                  <div className="sugu-ia-studio__prompt-col" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    
+                    {/* Right Column: AI Prompt Textarea & Generation */}
                     <div style={{
                       background: 'linear-gradient(135deg, #f7f0ff 0%, #edf2ff 100%)',
                       border: '2px solid #dcd0ff',
                       borderRadius: '20px',
                       padding: '30px',
                       display: 'flex',
-                      flexDirection: 'column',
-                      alignSelf: 'flex-start',
-                      position: 'relative'
+                      flexDirection: 'column'
                     }}>
-                      <div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#3A0088', margin: '0 0 10px 0', fontFamily: 'var(--sugu-font-heading)' }}>
-                          Décrivez votre article 🪄
-                        </h3>
-                        <p style={{ fontSize: '13.5px', color: '#5C5870', lineHeight: 1.5, margin: '0 0 20px 0' }}>
-                          Saisissez une description libre (ex: *"Vends iPhone 13 Pro Max 256 Go couleur or en très bon état avec boîte d'origine à 450 000 FCFA"*). L'IA en extraira automatiquement le titre, le prix, la catégorie et les spécifications techniques.
-                        </p>
+                      <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#3A0088', margin: '0 0 10px 0', fontFamily: 'var(--sugu-font-heading)' }}>
+                        Décrivez votre article 🪄
+                      </h3>
+                      <p style={{ fontSize: '13.5px', color: '#5C5870', lineHeight: 1.5, margin: '0 0 16px 0' }}>
+                        Saisissez une description libre de votre produit ou offre. L'IA rédigera automatiquement le titre, le prix, la catégorie et les caractéristiques techniques.
+                      </p>
 
-                        {iaLoading ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', padding: '40px 0' }}>
-                            <div className="sugu-spinner" style={{ border: '3px solid #E2D8FF', borderTop: '3px solid #6200EE', width: '32px', height: '32px', borderRadius: '50%', animation: 'sugu-spin 1s linear infinite' }}></div>
-                            <span style={{ fontSize: '14px', fontWeight: 600, color: '#6200EE', animation: 'sugu-pulse 1.5s ease-in-out infinite', textAlign: 'center' }}>
-                              Analyse et génération en cours...
-                            </span>
-                          </div>
-                        ) : (
-                          <textarea
-                            placeholder="Écrivez ici la description de votre annonce..."
-                            value={iaPrompt}
-                            onChange={(e) => setIaPrompt(e.target.value)}
+                      {/* Prompt suggestion chips */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+                        <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#6200EE', width: '100%', marginBottom: '2px' }}>💡 Exemples rapides (cliquez pour essayer) :</span>
+                        {[
+                          "Vends iPhone 13 Pro Max 256 Go couleur or très bon état avec boîte 450 000 FCFA",
+                          "Toyota Corolla 2018 automatique essence 75 000 km bon état 5 500 000 FCFA",
+                          "Canapé 3 places en cuir marron très bon état à céder 120 000 FCFA"
+                        ].map((chip, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setIaPrompt(chip)}
                             style={{
-                              width: '100%',
-                              height: '140px',
-                              border: '1.5px solid #dcd0ff',
-                              borderRadius: '12px',
-                              padding: '14px',
-                              fontSize: '14px',
-                              resize: 'none',
-                              lineHeight: 1.5,
-                              outline: 'none',
-                              fontFamily: 'inherit',
-                              boxSizing: 'border-box',
-                              background: '#FFF'
+                              background: '#FFF',
+                              border: '1px solid #dcd0ff',
+                              borderRadius: '16px',
+                              padding: '5px 10px',
+                              fontSize: '11.5px',
+                              color: '#3A0088',
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              lineHeight: 1.3
                             }}
-                            required
-                          />
-                        )}
+                          >
+                            {chip}
+                          </button>
+                        ))}
                       </div>
+
+                      {iaLoading ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px', padding: '50px 0' }}>
+                          <div className="sugu-spinner" style={{ border: '3px solid #E2D8FF', borderTop: '3px solid #6200EE', width: '36px', height: '36px', borderRadius: '50%', animation: 'sugu-spin 1s linear infinite' }}></div>
+                          <span style={{ fontSize: '15px', fontWeight: 700, color: '#6200EE', animation: 'sugu-pulse 1.5s ease-in-out infinite', textAlign: 'center' }}>
+                            🪄 L'IA analyse votre annonce et rédige la fiche...
+                          </span>
+                        </div>
+                      ) : (
+                        <textarea
+                          placeholder="Écrivez ici la description de votre annonce (ex: Vends iPhone 13 Pro Max 256 Go couleur or...)"
+                          value={iaPrompt}
+                          onChange={(e) => setIaPrompt(e.target.value)}
+                          style={{
+                            width: '100%',
+                            height: '150px',
+                            border: '1.5px solid #dcd0ff',
+                            borderRadius: '14px',
+                            padding: '14px',
+                            fontSize: '14.5px',
+                            resize: 'none',
+                            lineHeight: 1.5,
+                            outline: 'none',
+                            fontFamily: 'inherit',
+                            boxSizing: 'border-box',
+                            background: '#FFF'
+                          }}
+                          required
+                        />
+                      )}
 
                       {!iaLoading && (
                         <button
@@ -1623,7 +1840,7 @@ export default function Publier() {
                             background: 'linear-gradient(90deg, #6200EE 0%, #8700FF 100%)',
                             color: '#FFF',
                             border: 'none',
-                            padding: '14px 24px',
+                            padding: '15px 24px',
                             borderRadius: '12px',
                             fontWeight: 'bold',
                             cursor: 'pointer',
@@ -1631,19 +1848,17 @@ export default function Publier() {
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '8px',
-                            fontSize: '15px',
+                            fontSize: '16px',
                             boxShadow: '0 4px 15px rgba(98, 0, 238, 0.2)',
                             marginTop: '20px'
                           }}
                         >
-                          Générer l'annonce ➔
+                          ✨ Générer l'annonce avec l'IA ➔
                         </button>
                       )}
                     </div>
-
                   </div>
-
-                </div>
+                )}
               </div>
             )}
 

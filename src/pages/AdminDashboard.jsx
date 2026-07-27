@@ -41,7 +41,7 @@ export default function AdminDashboard() {
   const [lienStatutFilter, setLienStatutFilter] = useState('');
   const [liensCurrentPage, setLiensCurrentPage] = useState(1);
   const [selectedLienDetail, setSelectedLienDetail] = useState(null);
-  
+
   // Settings form states
   const [settings, setSettings] = useState({
     commission_rate: 5,
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   // Search & Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [adStatusFilter, setAdStatusFilter] = useState('');
-  
+
   // Drawer Panels
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedAnnonce, setSelectedAnnonce] = useState(null);
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
   const [reviewModalData, setReviewModalData] = useState(null);
   const [reviewModalLoading, setReviewModalLoading] = useState(false);
   const [reviewModalDemandeId, setReviewModalDemandeId] = useState(null);
-  
+
   // Batch selection states (listings)
   const [selectedAdIds, setSelectedAdIds] = useState([]);
 
@@ -83,8 +83,15 @@ export default function AdminDashboard() {
 
   const getFullUrl = (path) => {
     if (!path) return '';
-    if (path.startsWith('http')) return path;
-    return `http://localhost:4000${path}`;
+    let cleanPath = path;
+    if (cleanPath.startsWith('http://localhost:4000')) {
+      cleanPath = cleanPath.replace('http://localhost:4000', '');
+    }
+    if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://')) {
+      return cleanPath;
+    }
+    const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+    return `http://${host}:4000${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
   };
 
   // 1. Guard check : Only allow admins
@@ -482,7 +489,7 @@ export default function AdminDashboard() {
   // Filter listings list dynamically in UI
   const filteredUsers = useMemo(() => {
     if (!searchQuery) return usersList;
-    return usersList.filter(u => 
+    return usersList.filter(u =>
       u.nom?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       u.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       u.telephone?.includes(searchQuery)
@@ -518,7 +525,7 @@ export default function AdminDashboard() {
           100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 140, 22, 0); }
         }
       `}</style>
-      
+
       {/* 1. LEFT NAVIGATION SIDEBAR */}
       <aside className="sugu-admin__sidebar">
         <a href="/" className="sugu-admin__logo">
@@ -527,64 +534,64 @@ export default function AdminDashboard() {
         </a>
 
         <div className="sugu-admin__nav-group">
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
             <span>◱</span> Vue d'ensemble
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
             <span>👥</span> Utilisateurs
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'annonces' ? 'active' : ''}`}
             onClick={() => setActiveTab('annonces')}
           >
             <span>🏷️</span> Annonces
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'categories' ? 'active' : ''}`}
             onClick={() => setActiveTab('categories')}
           >
             <span>📁</span> Catégories
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'signalements' ? 'active' : ''}`}
             onClick={() => setActiveTab('signalements')}
           >
             <span>🚨</span> Signalements
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'paiements' ? 'active' : ''}`}
             onClick={() => setActiveTab('paiements')}
           >
             <span>💳</span> Paiements & Abonnements
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'publicites' ? 'active' : ''}`}
             onClick={() => setActiveTab('publicites')}
           >
             <span>📢</span> Publicités
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'stats' ? 'active' : ''}`}
             onClick={() => setActiveTab('stats')}
           >
             <span>📈</span> Statistiques
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'demandes-pro' ? 'active' : ''}`}
             onClick={() => setActiveTab('demandes-pro')}
             style={{
@@ -613,22 +620,22 @@ export default function AdminDashboard() {
               </span>
             )}
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'commissions' ? 'active' : ''}`}
             onClick={() => setActiveTab('commissions')}
           >
             <span>💰</span> Commissions & Litiges
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'liens-achat' ? 'active' : ''}`}
             onClick={() => setActiveTab('liens-achat')}
           >
             <span>🤝</span> Commandes & Rendez-vous
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className={`sugu-admin__nav-btn ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
@@ -639,14 +646,14 @@ export default function AdminDashboard() {
 
       {/* 2. MAIN APPLICATION CONTENT VIEW */}
       <main className="sugu-admin__main">
-        
+
         {/* Header toolbar */}
         <header className="sugu-admin__header">
           <div className="sugu-admin__header-search">
             <span>🔍</span>
-            <input 
-              type="text" 
-              placeholder="Recherche rapide d'utilisateurs ou annonces..." 
+            <input
+              type="text"
+              placeholder="Recherche rapide d'utilisateurs ou annonces..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -671,7 +678,7 @@ export default function AdminDashboard() {
 
         {/* Content body wrapper */}
         <div className="sugu-admin__content">
-          
+
           {/* Toast Notification element */}
           {toast && (
             <div style={{
@@ -867,9 +874,9 @@ export default function AdminDashboard() {
               <div className="sugu-admin__table-card">
                 <div className="sugu-admin__table-toolbar">
                   <div className="sugu-admin__table-filters">
-                    <input 
-                      type="text" 
-                      placeholder="Filtrer par nom/email/téléphone..." 
+                    <input
+                      type="text"
+                      placeholder="Filtrer par nom/email/téléphone..."
                       className="sugu-admin__form-input"
                       style={{ width: '240px', padding: '6px 12px' }}
                       value={searchQuery}
@@ -969,7 +976,7 @@ export default function AdminDashboard() {
               <div className="sugu-admin__table-card">
                 <div className="sugu-admin__table-toolbar">
                   <div className="sugu-admin__table-filters">
-                    <select 
+                    <select
                       className="sugu-admin__filter-select"
                       value={adStatusFilter}
                       onChange={(e) => {
@@ -993,7 +1000,7 @@ export default function AdminDashboard() {
                   <thead>
                     <tr>
                       <th style={{ width: '40px' }}>
-                        <input 
+                        <input
                           type="checkbox"
                           onChange={(e) => {
                             if (e.target.checked) {
@@ -1018,7 +1025,7 @@ export default function AdminDashboard() {
                     {annoncesList.map(ad => (
                       <tr key={ad.id}>
                         <td>
-                          <input 
+                          <input
                             type="checkbox"
                             checked={selectedAdIds.includes(ad.id)}
                             onChange={(e) => {
@@ -1036,7 +1043,7 @@ export default function AdminDashboard() {
                               <img src={ad.cover_url} alt="" style={{ width: '36px', height: '36px', objectFit: 'cover', borderRadius: '4px' }} />
                             )}
                             <div>
-                              <div 
+                              <div
                                 style={{ fontWeight: 'bold', color: 'var(--sugu-primary)', cursor: 'pointer', textDecoration: 'underline' }}
                                 onClick={() => setSelectedAnnonce(ad)}
                               >
@@ -1101,7 +1108,7 @@ export default function AdminDashboard() {
                           Supprimer
                         </button>
                       </div>
-                      
+
                       <div className="sugu-admin__cat-children">
                         {cat.children.length > 0 ? (
                           cat.children.map(child => (
@@ -1128,10 +1135,10 @@ export default function AdminDashboard() {
                   <form onSubmit={handleCreateCategory}>
                     <div className="sugu-admin__form-group" style={{ marginBottom: '12px' }}>
                       <label>Nom de la catégorie</label>
-                      <input 
-                        type="text" 
-                        className="sugu-admin__form-input" 
-                        placeholder="Ex: Électronique, Chaussures Homme..." 
+                      <input
+                        type="text"
+                        className="sugu-admin__form-input"
+                        placeholder="Ex: Électronique, Chaussures Homme..."
                         value={newCatNom}
                         onChange={(e) => setNewCatNom(e.target.value)}
                         required
@@ -1139,7 +1146,7 @@ export default function AdminDashboard() {
                     </div>
                     <div className="sugu-admin__form-group" style={{ marginBottom: '12px' }}>
                       <label>Catégorie Parente (Optionnel pour les sous-catégories)</label>
-                      <select 
+                      <select
                         className="sugu-admin__filter-select"
                         value={newCatParent}
                         onChange={(e) => setNewCatParent(e.target.value)}
@@ -1153,10 +1160,10 @@ export default function AdminDashboard() {
                     </div>
                     <div className="sugu-admin__form-group" style={{ marginBottom: '18px' }}>
                       <label>Icône / Emoji</label>
-                      <input 
-                        type="text" 
-                        className="sugu-admin__form-input" 
-                        placeholder="Ex: 📱, 👟, 🚗..." 
+                      <input
+                        type="text"
+                        className="sugu-admin__form-input"
+                        placeholder="Ex: 📱, 👟, 🚗..."
                         value={newCatIcone}
                         onChange={(e) => setNewCatIcone(e.target.value)}
                       />
@@ -1326,10 +1333,10 @@ export default function AdminDashboard() {
                   <form onSubmit={handleCreateBanner}>
                     <div className="sugu-admin__form-group" style={{ marginBottom: '12px' }}>
                       <label>Titre de la campagne</label>
-                      <input 
-                        type="text" 
-                        className="sugu-admin__form-input" 
-                        placeholder="Ex: Ventes Flash, Soldes Noel..." 
+                      <input
+                        type="text"
+                        className="sugu-admin__form-input"
+                        placeholder="Ex: Ventes Flash, Soldes Noel..."
                         value={newPubTitre}
                         onChange={(e) => setNewPubTitre(e.target.value)}
                         required
@@ -1337,37 +1344,37 @@ export default function AdminDashboard() {
                     </div>
                     <div className="sugu-admin__form-group" style={{ marginBottom: '12px' }}>
                       <label>Sélectionner l'image (Bannière)</label>
-                      <input 
-                        type="file" 
+                      <input
+                        type="file"
                         accept="image/*"
-                        className="sugu-admin__form-input" 
+                        className="sugu-admin__form-input"
                         onChange={handleBannerFileChange}
                         required
                       />
                       {newPubImage && (
                         <div style={{ marginTop: '8px' }}>
                           <span style={{ fontSize: '11px', color: '#666', display: 'block', marginBottom: '4px' }}>Aperçu :</span>
-                          <img 
-                            src={getFullUrl(newPubImage)} 
-                            alt="Aperçu" 
-                            style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #EAE5DD' }} 
+                          <img
+                            src={getFullUrl(newPubImage)}
+                            alt="Aperçu"
+                            style={{ width: '100%', height: '100px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #EAE5DD' }}
                           />
                         </div>
                       )}
                     </div>
                     <div className="sugu-admin__form-group" style={{ marginBottom: '12px' }}>
                       <label>Lien de redirection</label>
-                      <input 
-                        type="text" 
-                        className="sugu-admin__form-input" 
-                        placeholder="Ex: /recherche?commune=Plateau" 
+                      <input
+                        type="text"
+                        className="sugu-admin__form-input"
+                        placeholder="Ex: /recherche?commune=Plateau"
                         value={newPubLien}
                         onChange={(e) => setNewPubLien(e.target.value)}
                       />
                     </div>
                     <div className="sugu-admin__form-group" style={{ marginBottom: '18px' }}>
                       <label>Statut Initial</label>
-                      <select 
+                      <select
                         className="sugu-admin__filter-select"
                         value={newPubStatut}
                         onChange={(e) => setNewPubStatut(e.target.value)}
@@ -1465,9 +1472,9 @@ export default function AdminDashboard() {
                   <div className="sugu-admin__form-grid">
                     <div className="sugu-admin__form-group">
                       <label>Frais de Service Commission (%)</label>
-                      <input 
-                        type="number" 
-                        className="sugu-admin__form-input" 
+                      <input
+                        type="number"
+                        className="sugu-admin__form-input"
                         min="0"
                         max="100"
                         value={settings.commission_rate}
@@ -1478,9 +1485,9 @@ export default function AdminDashboard() {
 
                     <div className="sugu-admin__form-group">
                       <label>Délai de validation Escrow automatique (jours)</label>
-                      <input 
-                        type="number" 
-                        className="sugu-admin__form-input" 
+                      <input
+                        type="number"
+                        className="sugu-admin__form-input"
                         min="1"
                         value={settings.escrow_validation_delay}
                         onChange={(e) => setSettings({ ...settings, escrow_validation_delay: Number(e.target.value) })}
@@ -1492,9 +1499,9 @@ export default function AdminDashboard() {
                   <div className="sugu-admin__form-grid" style={{ marginTop: '12px' }}>
                     <div className="sugu-admin__form-group">
                       <label>Délai d'expédition automatique (heures)</label>
-                      <input 
-                        type="number" 
-                        className="sugu-admin__form-input" 
+                      <input
+                        type="number"
+                        className="sugu-admin__form-input"
                         min="1"
                         value={settings.auto_ship_delay}
                         onChange={(e) => setSettings({ ...settings, auto_ship_delay: Number(e.target.value) })}
@@ -1505,7 +1512,7 @@ export default function AdminDashboard() {
 
                   <div className="sugu-admin__form-group" style={{ marginTop: '16px' }}>
                     <label>Conditions Générales de Vente (Texte Légal)</label>
-                    <textarea 
+                    <textarea
                       className="sugu-admin__form-textarea"
                       value={settings.legal_terms}
                       onChange={(e) => setSettings({ ...settings, legal_terms: e.target.value })}
@@ -1514,7 +1521,7 @@ export default function AdminDashboard() {
 
                   <div className="sugu-admin__form-group" style={{ marginTop: '16px', marginBottom: '24px' }}>
                     <label>Politique de Confidentialité</label>
-                    <textarea 
+                    <textarea
                       className="sugu-admin__form-textarea"
                       value={settings.privacy_policy}
                       onChange={(e) => setSettings({ ...settings, privacy_policy: e.target.value })}
@@ -1577,10 +1584,10 @@ export default function AdminDashboard() {
                             </td>
                             <td style={{ padding: '12px 8px' }}>
                               {d.justificatif ? (
-                                <a 
-                                  href={getFullUrl(d.justificatif)} 
-                                  target="_blank" 
-                                  rel="noreferrer" 
+                                <a
+                                  href={getFullUrl(d.justificatif)}
+                                  target="_blank"
+                                  rel="noreferrer"
                                   style={{ color: 'var(--sugu-primary)', fontWeight: 'bold', textDecoration: 'none' }}
                                 >
                                   📄 Voir document
@@ -1789,281 +1796,282 @@ export default function AdminDashboard() {
             </div>
           )}
 
-        {/* ===== TAB 12: SUIVI COMMANDES & RENDEZ-VOUS ===== */}
-        {activeTab === 'liens-achat' && (
-          <div className="sugu-admin__section">
-            <div className="sugu-admin__section-header">
-              <div>
-                <h2 className="sugu-admin__section-title">🤝 Suivi des Commandes & Rendez-vous</h2>
-                <p className="sugu-admin__section-subtitle">
-                  Supervision complète des transactions entre acheteurs et vendeurs (Remises en main propre & Livraisons à domicile).
-                </p>
-              </div>
-            </div>
-
-            {/* KPI Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-              <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>Total Commandes / RDV</div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--sugu-ink)', marginTop: '4px' }}>{liensAchatList.length}</div>
-              </div>
-              <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>🤝 Remise en Main Propre</div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#106C62', marginTop: '4px' }}>
-                  {liensAchatList.filter(l => l.mode_reception === 'retrait').length}
+          {/* ===== TAB 12: SUIVI COMMANDES & RENDEZ-VOUS ===== */}
+          {activeTab === 'liens-achat' && (
+            <div className="sugu-admin__section">
+              <div className="sugu-admin__section-header">
+                <div>
+                  <h2 className="sugu-admin__section-title">🤝 Suivi des Commandes & Rendez-vous</h2>
+                  <p className="sugu-admin__section-subtitle">
+                    Supervision complète des transactions entre acheteurs et vendeurs (Remises en main propre & Livraisons à domicile).
+                  </p>
                 </div>
               </div>
-              <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>📦 Livraison à Domicile</div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#D4380D', marginTop: '4px' }}>
-                  {liensAchatList.filter(l => l.mode_reception === 'livraison').length}
-                </div>
-              </div>
-              <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>🛡️ Séquestres & Payés</div>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#389E0D', marginTop: '4px' }}>
-                  {liensAchatList.filter(l => ['paye', 'expedie', 'livre', 'valide'].includes(l.statut)).length}
-                </div>
-              </div>
-            </div>
 
-            {/* Filters */}
-            <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD', marginBottom: '20px', display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#666', marginRight: '8px' }}>Mode de Réception :</label>
-                <select
-                  value={lienModeFilter}
-                  onChange={(e) => { setLienModeFilter(e.target.value); setLiensCurrentPage(1); }}
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '12px' }}
-                >
-                  <option value="">Tous les modes</option>
-                  <option value="retrait">🤝 Remise en main propre</option>
-                  <option value="livraison">📦 Livraison à domicile</option>
-                </select>
-              </div>
-
-              <div>
-                <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#666', marginRight: '8px' }}>Statut :</label>
-                <select
-                  value={lienStatutFilter}
-                  onChange={(e) => { setLienStatutFilter(e.target.value); setLiensCurrentPage(1); }}
-                  style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '12px' }}
-                >
-                  <option value="">Tous les statuts</option>
-                  <option value="cree">⚡ Créé (Proposition)</option>
-                  <option value="attente_vendeur">⏳ En attente Vendeur</option>
-                  <option value="attente_acheteur">🔄 En attente Acheteur</option>
-                  <option value="paye">📅 RDV Planifié / Payé</option>
-                  <option value="expedie">🚚 Expédié</option>
-                  <option value="livre">📦 Livré / Remis (Vérification 48h)</option>
-                  <option value="valide">🎉 Finalisé</option>
-                  <option value="inconforme">⚠️ Litige en cours</option>
-                  <option value="annule">❌ Annulé</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Table */}
-            <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #EAE5DD', padding: '24px' }}>
-              {liensAchatList.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 0', color: '#999', fontSize: '13.5px' }}>
-                  Aucune commande ou rendez-vous correspondant aux filtres.
+              {/* KPI Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+                <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
+                  <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>Total Commandes / RDV</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--sugu-ink)', marginTop: '4px' }}>{liensAchatList.length}</div>
                 </div>
-              ) : (
-                <>
-                  <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ borderBottom: '2px solid #EAE5DD', color: '#666', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '0.04em' }}>
-                          <th style={{ padding: '10px' }}>ID / Date</th>
-                          <th style={{ padding: '10px' }}>Article & Prix</th>
-                          <th style={{ padding: '10px' }}>Vendeur</th>
-                          <th style={{ padding: '10px' }}>Acheteur</th>
-                          <th style={{ padding: '10px' }}>Mode</th>
-                          <th style={{ padding: '10px' }}>Paiement</th>
-                          <th style={{ padding: '10px' }}>Détails RDV / Adresse</th>
-                          <th style={{ padding: '10px' }}>Statut</th>
-                          <th style={{ padding: '10px' }}>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {liensAchatList.slice((liensCurrentPage - 1) * 20, liensCurrentPage * 20).map(item => (
-                          <tr key={item.id} style={{ borderBottom: '1px solid #F1ECE3' }}>
-                            <td style={{ padding: '10px' }}>
-                              <div style={{ fontWeight: 800, color: 'var(--sugu-primary)' }}>#LA-{item.id}</div>
-                              <div style={{ fontSize: '10.5px', color: '#999' }}>
-                                {new Date(item.created_at).toLocaleDateString('fr-FR')} {new Date(item.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                              </div>
-                            </td>
-                            <td style={{ padding: '10px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                {item.cover_url && (
-                                  <img src={getFullUrl(item.cover_url)} alt="" style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '4px' }} />
-                                )}
-                                <div>
-                                  <div style={{ fontWeight: 700, color: '#333' }}>{item.ad_title}</div>
-                                  <div style={{ fontWeight: 800, color: 'var(--sugu-primary)', fontSize: '11.5px' }}>{item.prix_convenu?.toLocaleString('fr-FR')} FCFA</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td style={{ padding: '10px' }}>
-                              <div style={{ fontWeight: 600 }}>{item.ven_nom}</div>
-                              <div style={{ fontSize: '10.5px', color: '#888' }}>{item.ven_tel || item.ven_email}</div>
-                            </td>
-                            <td style={{ padding: '10px' }}>
-                              <div style={{ fontWeight: 600 }}>{item.ach_nom}</div>
-                              <div style={{ fontSize: '10.5px', color: '#888' }}>{item.ach_tel || item.ach_email}</div>
-                            </td>
-                            <td style={{ padding: '10px' }}>
-                              {item.mode_reception === 'retrait' ? (
-                                <span style={{ background: '#E6F4F2', color: '#106C62', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
-                                  🤝 Main propre
-                                </span>
-                              ) : (
-                                <span style={{ background: '#FFF0F6', color: '#C41D7F', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
-                                  📦 Livraison
-                                </span>
-                              )}
-                            </td>
-                            <td style={{ padding: '10px' }}>
-                              {item.moyen_paiement === 'portefeuille' ? (
-                                <span style={{ background: '#E6F7F0', color: '#389E0D', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
-                                  🛡️ Portefeuille
-                                </span>
-                              ) : (
-                                <span style={{ background: '#FFF7E6', color: '#D4380D', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
-                                  💵 Espèces
-                                </span>
-                              )}
-                            </td>
-                            <td style={{ padding: '10px', maxWidth: '200px' }}>
-                              {item.mode_reception === 'retrait' ? (
-                                <div>
-                                  <div style={{ fontWeight: 700, color: '#106C62' }}>🗓️ {item.retrait_date || 'Date non fixée'}</div>
-                                </div>
-                              ) : (
-                                <div>
-                                  <div style={{ fontWeight: 600 }}>📍 {item.livraison_commune}</div>
-                                  <div style={{ fontSize: '10.5px', color: '#777' }}>{item.livraison_adresse}</div>
-                                </div>
-                              )}
-                            </td>
-                            <td style={{ padding: '10px' }}>
-                              <span style={{
-                                padding: '3px 8px',
-                                borderRadius: '6px',
-                                fontSize: '11px',
-                                fontWeight: 'bold',
-                                background: 
-                                  item.statut === 'valide' ? '#E6F7F0' :
-                                  item.statut === 'inconforme' ? '#FFF1F0' :
-                                  item.statut === 'paye' ? '#E6F4F2' :
-                                  item.statut === 'annule' ? '#F5F5F5' : '#FFF7E6',
-                                color: 
-                                  item.statut === 'valide' ? '#389E0D' :
-                                  item.statut === 'inconforme' ? '#F5222D' :
-                                  item.statut === 'paye' ? '#106C62' :
-                                  item.statut === 'annule' ? '#888' : '#D4380D'
-                              }}>
-                                {item.statut === 'cree' && '⚡ Créé'}
-                                {item.statut === 'attente_vendeur' && '⏳ Attente Vendeur'}
-                                {item.statut === 'attente_acheteur' && '🔄 Attente Acheteur'}
-                                {item.statut === 'paye' && '📅 RDV Planifié / Payé'}
-                                {item.statut === 'expedie' && '🚚 Expédié'}
-                                {item.statut === 'livre' && '📦 Livré (Vérification)'}
-                                {item.statut === 'valide' && '🎉 Finalisé'}
-                                {item.statut === 'annule' && '❌ Annulé'}
-                                {item.statut === 'inconforme' && '⚠️ Litige'}
-                              </span>
-                            </td>
-                            <td style={{ padding: '10px' }}>
-                              <button
-                                type="button"
-                                className="sugu-admin__btn primary"
-                                onClick={() => setSelectedLienDetail(item)}
-                                style={{ padding: '4px 8px', fontSize: '11px' }}
-                              >
-                                👁️ Détails
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
+                  <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>🤝 Remise en Main Propre</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: '#106C62', marginTop: '4px' }}>
+                    {liensAchatList.filter(l => l.mode_reception === 'retrait').length}
                   </div>
+                </div>
+                <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
+                  <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>📦 Livraison à Domicile</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: '#D4380D', marginTop: '4px' }}>
+                    {liensAchatList.filter(l => l.mode_reception === 'livraison').length}
+                  </div>
+                </div>
+                <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD' }}>
+                  <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 700 }}>🛡️ Séquestres & Payés</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: '#389E0D', marginTop: '4px' }}>
+                    {liensAchatList.filter(l => ['paye', 'expedie', 'livre', 'valide'].includes(l.statut)).length}
+                  </div>
+                </div>
+              </div>
 
-                  {/* Pagination Controls */}
-                  {liensAchatList.length > 0 && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #EAE5DD', paddingTop: '16px', marginTop: '16px', flexWrap: 'wrap', gap: '12px' }}>
-                      <div style={{ fontSize: '12px', color: '#666' }}>
-                        Affichage de <strong>{((liensCurrentPage - 1) * 20) + 1}</strong> à <strong>{Math.min(liensCurrentPage * 20, liensAchatList.length)}</strong> sur <strong>{liensAchatList.length}</strong> commandes
-                      </div>
-                      
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <button
-                          type="button"
-                          disabled={liensCurrentPage === 1}
-                          onClick={() => setLiensCurrentPage(prev => Math.max(1, prev - 1))}
-                          style={{
-                            padding: '6px 12px',
-                            borderRadius: '6px',
-                            border: '1px solid #CCC',
-                            background: liensCurrentPage === 1 ? '#F5F5F5' : '#FFF',
-                            color: liensCurrentPage === 1 ? '#AAA' : '#333',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            cursor: liensCurrentPage === 1 ? 'not-allowed' : 'pointer'
-                          }}
-                        >
-                          ◄ Précédent
-                        </button>
+              {/* Filters */}
+              <div style={{ background: '#fff', padding: '16px 20px', borderRadius: '12px', border: '1px solid #EAE5DD', marginBottom: '20px', display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#666', marginRight: '8px' }}>Mode de Réception :</label>
+                  <select
+                    value={lienModeFilter}
+                    onChange={(e) => { setLienModeFilter(e.target.value); setLiensCurrentPage(1); }}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '12px' }}
+                  >
+                    <option value="">Tous les modes</option>
+                    <option value="retrait">🤝 Remise en main propre</option>
+                    <option value="livraison">📦 Livraison à domicile</option>
+                  </select>
+                </div>
 
-                        {Array.from({ length: Math.ceil(liensAchatList.length / 20) || 1 }, (_, i) => i + 1).map(p => (
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#666', marginRight: '8px' }}>Statut :</label>
+                  <select
+                    value={lienStatutFilter}
+                    onChange={(e) => { setLienStatutFilter(e.target.value); setLiensCurrentPage(1); }}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid #CCC', fontSize: '12px' }}
+                  >
+                    <option value="">Tous les statuts</option>
+                    <option value="cree">⚡ Créé (Proposition)</option>
+                    <option value="attente_vendeur">⏳ En attente Vendeur</option>
+                    <option value="attente_acheteur">🔄 En attente Acheteur</option>
+                    <option value="paye">📅 RDV Planifié / Payé</option>
+                    <option value="expedie">🚚 Expédié</option>
+                    <option value="livre">📦 Livré / Remis (Vérification 48h)</option>
+                    <option value="valide">🎉 Finalisé</option>
+                    <option value="inconforme">⚠️ Litige en cours</option>
+                    <option value="annule">❌ Annulé</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Table */}
+              <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #EAE5DD', padding: '24px' }}>
+                {liensAchatList.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: '#999', fontSize: '13.5px' }}>
+                    Aucune commande ou rendez-vous correspondant aux filtres.
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ overflowX: 'auto' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12.5px', textAlign: 'left' }}>
+                        <thead>
+                          <tr style={{ borderBottom: '2px solid #EAE5DD', color: '#666', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '0.04em' }}>
+                            <th style={{ padding: '10px' }}>ID / Date</th>
+                            <th style={{ padding: '10px' }}>Article & Prix</th>
+                            <th style={{ padding: '10px' }}>Vendeur</th>
+                            <th style={{ padding: '10px' }}>Acheteur</th>
+                            <th style={{ padding: '10px' }}>Mode</th>
+                            <th style={{ padding: '10px' }}>Paiement</th>
+                            <th style={{ padding: '10px' }}>Détails RDV / Adresse</th>
+                            <th style={{ padding: '10px' }}>Statut</th>
+                            <th style={{ padding: '10px' }}>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {liensAchatList.slice((liensCurrentPage - 1) * 20, liensCurrentPage * 20).map(item => (
+                            <tr key={item.id} style={{ borderBottom: '1px solid #F1ECE3' }}>
+                              <td style={{ padding: '10px' }}>
+                                <div style={{ fontWeight: 800, color: 'var(--sugu-primary)' }}>#LA-{item.id}</div>
+                                <div style={{ fontSize: '10.5px', color: '#999' }}>
+                                  {new Date(item.created_at).toLocaleDateString('fr-FR')} {new Date(item.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                              </td>
+                              <td style={{ padding: '10px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  {item.cover_url && (
+                                    <img src={getFullUrl(item.cover_url)} alt="" style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '4px' }} />
+                                  )}
+                                  <div>
+                                    <div style={{ fontWeight: 700, color: '#333' }}>{item.ad_title}</div>
+                                    <div style={{ fontWeight: 800, color: 'var(--sugu-primary)', fontSize: '11.5px' }}>{item.prix_convenu?.toLocaleString('fr-FR')} FCFA</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={{ padding: '10px' }}>
+                                <div style={{ fontWeight: 600 }}>{item.ven_nom}</div>
+                                <div style={{ fontSize: '10.5px', color: '#888' }}>{item.ven_tel || item.ven_email}</div>
+                              </td>
+                              <td style={{ padding: '10px' }}>
+                                <div style={{ fontWeight: 600 }}>{item.ach_nom}</div>
+                                <div style={{ fontSize: '10.5px', color: '#888' }}>{item.ach_tel || item.ach_email}</div>
+                              </td>
+                              <td style={{ padding: '10px' }}>
+                                {item.mode_reception === 'retrait' ? (
+                                  <span style={{ background: '#E6F4F2', color: '#106C62', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
+                                    🤝 Main propre
+                                  </span>
+                                ) : (
+                                  <span style={{ background: '#FFF0F6', color: '#C41D7F', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
+                                    📦 Livraison
+                                  </span>
+                                )}
+                              </td>
+                              <td style={{ padding: '10px' }}>
+                                {item.moyen_paiement === 'portefeuille' ? (
+                                  <span style={{ background: '#E6F7F0', color: '#389E0D', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
+                                    🛡️ Portefeuille
+                                  </span>
+                                ) : (
+                                  <span style={{ background: '#FFF7E6', color: '#D4380D', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '11px' }}>
+                                    💵 Espèces
+                                  </span>
+                                )}
+                              </td>
+                              <td style={{ padding: '10px', maxWidth: '200px' }}>
+                                {item.mode_reception === 'retrait' ? (
+                                  <div>
+                                    <div style={{ fontWeight: 700, color: '#106C62' }}>🗓️ {item.retrait_date || 'Date non fixée'}</div>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    <div style={{ fontWeight: 600 }}>📍 {item.livraison_commune}</div>
+                                    <div style={{ fontSize: '10.5px', color: '#777' }}>{item.livraison_adresse}</div>
+                                  </div>
+                                )}
+                              </td>
+                              <td style={{ padding: '10px' }}>
+                                <span style={{
+                                  padding: '3px 8px',
+                                  borderRadius: '6px',
+                                  fontSize: '11px',
+                                  fontWeight: 'bold',
+                                  background:
+                                    item.statut === 'valide' || item.statut === 'retourne' ? '#E6F7F0' :
+                                      item.statut === 'inconforme' ? '#FFF1F0' :
+                                        item.statut === 'paye' ? '#E6F4F2' :
+                                          item.statut === 'annule' ? '#F5F5F5' : '#FFF7E6',
+                                  color:
+                                    item.statut === 'valide' || item.statut === 'retourne' ? '#389E0D' :
+                                      item.statut === 'inconforme' ? '#F5222D' :
+                                        item.statut === 'paye' ? '#106C62' :
+                                          item.statut === 'annule' ? '#888' : '#D4380D'
+                                }}>
+                                  {item.statut === 'cree' && '⚡ Créé'}
+                                  {item.statut === 'attente_vendeur' && '⏳ Attente Vendeur'}
+                                  {item.statut === 'attente_acheteur' && '🔄 Attente Acheteur'}
+                                  {item.statut === 'paye' && '📅 RDV Planifié / Payé'}
+                                  {item.statut === 'expedie' && '🚚 Expédié'}
+                                  {item.statut === 'livre' && '📦 Livré (Vérification)'}
+                                  {item.statut === 'valide' && '🎉 Finalisé'}
+                                  {item.statut === 'retourne' && '📦 Retourné & Remboursé'}
+                                  {item.statut === 'annule' && '❌ Annulé'}
+                                  {item.statut === 'inconforme' && '⚠️ Litige'}
+                                </span>
+                              </td>
+                              <td style={{ padding: '10px' }}>
+                                <button
+                                  type="button"
+                                  className="sugu-admin__btn primary"
+                                  onClick={() => setSelectedLienDetail(item)}
+                                  style={{ padding: '4px 8px', fontSize: '11px' }}
+                                >
+                                  👁️ Détails
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Pagination Controls */}
+                    {liensAchatList.length > 0 && (
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #EAE5DD', paddingTop: '16px', marginTop: '16px', flexWrap: 'wrap', gap: '12px' }}>
+                        <div style={{ fontSize: '12px', color: '#666' }}>
+                          Affichage de <strong>{((liensCurrentPage - 1) * 20) + 1}</strong> à <strong>{Math.min(liensCurrentPage * 20, liensAchatList.length)}</strong> sur <strong>{liensAchatList.length}</strong> commandes
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <button
-                            key={p}
                             type="button"
-                            onClick={() => setLiensCurrentPage(p)}
+                            disabled={liensCurrentPage === 1}
+                            onClick={() => setLiensCurrentPage(prev => Math.max(1, prev - 1))}
                             style={{
-                              padding: '6px 10px',
+                              padding: '6px 12px',
                               borderRadius: '6px',
-                              border: '1px solid',
-                              borderColor: liensCurrentPage === p ? 'var(--sugu-primary)' : '#CCC',
-                              background: liensCurrentPage === p ? 'var(--sugu-primary)' : '#FFF',
-                              color: liensCurrentPage === p ? '#FFF' : '#333',
+                              border: '1px solid #CCC',
+                              background: liensCurrentPage === 1 ? '#F5F5F5' : '#FFF',
+                              color: liensCurrentPage === 1 ? '#AAA' : '#333',
                               fontSize: '12px',
                               fontWeight: 'bold',
-                              cursor: 'pointer'
+                              cursor: liensCurrentPage === 1 ? 'not-allowed' : 'pointer'
                             }}
                           >
-                            {p}
+                            ◄ Précédent
                           </button>
-                        ))}
 
-                        <button
-                          type="button"
-                          disabled={liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1)}
-                          onClick={() => setLiensCurrentPage(prev => Math.min(Math.ceil(liensAchatList.length / 20) || 1, prev + 1))}
-                          style={{
-                            padding: '6px 12px',
-                            borderRadius: '6px',
-                            border: '1px solid #CCC',
-                            background: liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1) ? '#F5F5F5' : '#FFF',
-                            color: liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1) ? '#AAA' : '#333',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            cursor: liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1) ? 'not-allowed' : 'pointer'
-                          }}
-                        >
-                          Suivant ►
-                        </button>
+                          {Array.from({ length: Math.ceil(liensAchatList.length / 20) || 1 }, (_, i) => i + 1).map(p => (
+                            <button
+                              key={p}
+                              type="button"
+                              onClick={() => setLiensCurrentPage(p)}
+                              style={{
+                                padding: '6px 10px',
+                                borderRadius: '6px',
+                                border: '1px solid',
+                                borderColor: liensCurrentPage === p ? 'var(--sugu-primary)' : '#CCC',
+                                background: liensCurrentPage === p ? 'var(--sugu-primary)' : '#FFF',
+                                color: liensCurrentPage === p ? '#FFF' : '#333',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {p}
+                            </button>
+                          ))}
+
+                          <button
+                            type="button"
+                            disabled={liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1)}
+                            onClick={() => setLiensCurrentPage(prev => Math.min(Math.ceil(liensAchatList.length / 20) || 1, prev + 1))}
+                            style={{
+                              padding: '6px 12px',
+                              borderRadius: '6px',
+                              border: '1px solid #CCC',
+                              background: liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1) ? '#F5F5F5' : '#FFF',
+                              color: liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1) ? '#AAA' : '#333',
+                              fontSize: '12px',
+                              fontWeight: 'bold',
+                              cursor: liensCurrentPage === (Math.ceil(liensAchatList.length / 20) || 1) ? 'not-allowed' : 'pointer'
+                            }}
+                          >
+                            Suivant ►
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </>
-              )}
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         </div>
       </main>
@@ -2110,17 +2118,17 @@ export default function AdminDashboard() {
             </div>
 
             <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <button 
-                type="button" 
-                className={`sugu-admin__btn ${selectedUser.est_banni === 1 ? 'success' : 'danger'}`} 
+              <button
+                type="button"
+                className={`sugu-admin__btn ${selectedUser.est_banni === 1 ? 'success' : 'danger'}`}
                 style={{ width: '100%', justifyContent: 'center', padding: '8px' }}
                 onClick={() => handleToggleUserBan(selectedUser)}
               >
                 {selectedUser.est_banni === 1 ? 'Débannir le compte' : 'Bannir le compte 🚫'}
               </button>
-              <button 
-                type="button" 
-                className="sugu-admin__btn primary" 
+              <button
+                type="button"
+                className="sugu-admin__btn primary"
                 style={{ width: '100%', justifyContent: 'center', padding: '8px' }}
                 onClick={() => handleToggleUserRole(selectedUser)}
               >
@@ -2145,7 +2153,7 @@ export default function AdminDashboard() {
               ) : (
                 <div style={{ width: '100%', height: '180px', background: '#F1ECE3', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>Aucune Image</div>
               )}
-              
+
               <div>
                 <h4 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: 'bold' }}>{selectedAnnonce.titre}</h4>
                 <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--sugu-primary)' }}>{selectedAnnonce.prix.toLocaleString('fr-FR')} FCFA</div>
@@ -2165,17 +2173,17 @@ export default function AdminDashboard() {
               </div>
 
               <div style={{ borderTop: '1px solid #F1ECE3', paddingTop: '16px', display: 'flex', gap: '10px' }}>
-                <button 
-                  type="button" 
-                  className="sugu-admin__btn success" 
+                <button
+                  type="button"
+                  className="sugu-admin__btn success"
                   style={{ flex: 1, justifyContent: 'center', padding: '10px 0', fontWeight: 'bold' }}
                   onClick={() => handleUpdateAdStatut(selectedAnnonce.id, 'active')}
                 >
                   Valider l'annonce ✓
                 </button>
-                <button 
-                  type="button" 
-                  className="sugu-admin__btn danger" 
+                <button
+                  type="button"
+                  className="sugu-admin__btn danger"
                   style={{ flex: 1, justifyContent: 'center', padding: '10px 0', fontWeight: 'bold' }}
                   onClick={() => handleUpdateAdStatut(selectedAnnonce.id, 'suspendue')}
                 >
@@ -2382,7 +2390,7 @@ export default function AdminDashboard() {
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                             <div style={{ fontWeight: 'bold', fontSize: '12px', color: '#333' }}>{avis.auteur}</div>
                             <div style={{ display: 'flex', gap: '2px' }}>
-                              {[1,2,3,4,5].map(s => (
+                              {[1, 2, 3, 4, 5].map(s => (
                                 <span key={s} style={{ fontSize: '13px', color: s <= avis.note ? '#F5A623' : '#DDD' }}>★</span>
                               ))}
                             </div>

@@ -63,6 +63,66 @@ export default function AchatLien() {
     });
   };
 
+  const deliveryInputRef = useRef(null);
+  const deliveryAutocompleteRef = useRef(null);
+
+  const setDeliveryInputRef = (el) => {
+    deliveryInputRef.current = el;
+    if (el && window.google?.maps?.places && !deliveryAutocompleteRef.current) {
+      const autocomplete = new window.google.maps.places.Autocomplete(el, {
+        types: ['geocode', 'establishment'],
+        componentRestrictions: { country: 'ci' }
+      });
+      deliveryAutocompleteRef.current = autocomplete;
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (!place.address_components) return;
+        let streetAddress = place.formatted_address || place.name || "";
+        setAdresse(streetAddress);
+      });
+    }
+  };
+
+  const handleGeolocateDelivery = () => {
+    if (!navigator.geolocation) {
+      alert("La géolocalisation n'est pas supportée par votre navigateur.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          let key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+          if (!key) {
+            const res = await client.get('/config/google-maps-key').catch(() => null);
+            if (res?.data?.key) key = res.data.key;
+          }
+          if (!key) {
+            alert("Clé Google Maps introuvable pour la géolocalisation.");
+            return;
+          }
+
+          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${key}`);
+          const data = await response.json();
+          if (data.results && data.results.length > 0) {
+            const place = data.results[0];
+            const foundAddress = place.formatted_address || place.name || "";
+            setAdresse(foundAddress);
+          } else {
+            alert("Aucune adresse trouvée pour ces coordonnées.");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Erreur lors de la géolocalisation.");
+        }
+      },
+      (err) => {
+        console.error(err);
+        alert("Accès à la géolocalisation refusé ou indisponible.");
+      }
+    );
+  };
+
   const handleGeolocate = () => {
     if (!navigator.geolocation) {
       alert("La géolocalisation n'est pas supportée par votre navigateur.");
@@ -267,7 +327,7 @@ export default function AchatLien() {
         setRetraitDate(compiledRetraitDate);
       }
 
-      await client.post(`/liens-achat/${id}/payer`, {
+      const res = await client.post(`/liens-achat/${id}/payer`, {
         modeReception,
         livraisonNom: nom,
         livraisonPrenom: prenom,
@@ -281,6 +341,12 @@ export default function AchatLien() {
         retraitAdresse,
         moyenPaiement
       });
+
+      if (res.data.wave_launch_url) {
+        window.location.href = res.data.wave_launch_url;
+        return;
+      }
+
       setSuccess(true);
     } catch (err) {
       alert(err.response?.data?.message || "Erreur lors de la validation du paiement.");
@@ -499,13 +565,37 @@ export default function AchatLien() {
 
                     <div className="sugu-checkout-page__field">
                       <label>Adresse précise (Rue, Quartier) *</label>
-                      <input
-                        type="text"
-                        placeholder="Ex: Boulevard de Marseille, Zone 4"
-                        value={adresse}
-                        onChange={(e) => setAdresse(e.target.value)}
-                        required
-                      />
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                          type="text"
+                          ref={setDeliveryInputRef}
+                          placeholder="Ex: Boulevard de Marseille, Zone 4"
+                          value={adresse}
+                          onChange={(e) => setAdresse(e.target.value)}
+                          required
+                          style={{ flex: 1 }}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleGeolocateDelivery}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '10px 14px',
+                            background: 'var(--sugu-primary)',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          📍 Me localiser
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -636,8 +726,33 @@ export default function AchatLien() {
                       Choisissez comment régler cet achat pour votre rendez-vous :
                     </p>
 
-                    <div className="sugu-checkout-page__payment-methods" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      {/* Option 1: Espèces */}
+                    <div className="sugu-checkout-page__payment-methods" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                      {/* Option 1: Wave */}
+                      <label
+                        className={`sugu-checkout-page__payment-label ${moyenPaiement === 'wave' ? 'selected' : ''}`}
+                        style={{ minHeight: '76px', padding: '12px 14px', cursor: 'pointer' }}
+                        onClick={() => setMoyenPaiement('wave')}
+                      >
+                        <input
+                          type="radio"
+                          name="payment_method_retrait"
+                          value="wave"
+                          checked={moyenPaiement === 'wave'}
+                          onChange={() => setMoyenPaiement('wave')}
+                          style={{ display: 'none' }}
+                        />
+                        <div className="sugu-checkout-page__payment-icon">
+                          <img src={waveIcon} alt="Wave" style={{ height: '22px', width: 'auto', objectFit: 'contain' }} />
+                        </div>
+                        <span className="sugu-checkout-page__payment-name" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+                          <span style={{ fontWeight: 'bold', fontSize: '13.5px' }}>Wave</span>
+                          <span style={{ fontSize: '11px', color: '#1DC4FF', fontWeight: 600, marginTop: '2px' }}>
+                            En séquestre 🛡️
+                          </span>
+                        </span>
+                      </label>
+
+                      {/* Option 2: Espèces */}
                       <label
                         className={`sugu-checkout-page__payment-label ${moyenPaiement === 'especes' ? 'selected' : ''}`}
                         style={{ minHeight: '76px', padding: '12px 14px', cursor: 'pointer' }}
@@ -655,14 +770,14 @@ export default function AchatLien() {
                           <span style={{ fontSize: '22px' }}>💵</span>
                         </div>
                         <span className="sugu-checkout-page__payment-name" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
-                          <span style={{ fontWeight: 'bold', fontSize: '13.5px' }}>Espèces sur place</span>
+                          <span style={{ fontWeight: 'bold', fontSize: '13.5px' }}>Espèces</span>
                           <span style={{ fontSize: '11px', color: 'var(--sugu-ink-soft)', marginTop: '2px' }}>
-                            Paiement en liquide lors du retrait
+                            Sur place
                           </span>
                         </span>
                       </label>
 
-                      {/* Option 2: Portefeuille */}
+                      {/* Option 3: Portefeuille */}
                       <label
                         className={`sugu-checkout-page__payment-label ${moyenPaiement === 'portefeuille' ? 'selected' : ''}`}
                         style={{ minHeight: '76px', padding: '12px 14px', cursor: 'pointer' }}
@@ -680,7 +795,7 @@ export default function AchatLien() {
                           <span style={{ fontSize: '22px' }}>👛</span>
                         </div>
                         <span className="sugu-checkout-page__payment-name" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
-                          <span style={{ fontWeight: 'bold', fontSize: '13.5px' }}>Portefeuille Sugu</span>
+                          <span style={{ fontWeight: 'bold', fontSize: '13.5px' }}>Portefeuille</span>
                           <span style={{ fontSize: '11px', color: '#389E0D', fontWeight: 600, marginTop: '2px' }}>
                             Solde: {soldePortefeuille.toLocaleString('fr-FR')} FCFA
                           </span>
@@ -688,7 +803,14 @@ export default function AchatLien() {
                       </label>
                     </div>
 
-                    {moyenPaiement === 'portefeuille' ? (
+                    {moyenPaiement === 'wave' ? (
+                      <div style={{ marginTop: '14px', padding: '12px 14px', background: '#E8F7FF', border: '1px solid #1DC4FF', borderRadius: '8px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '18px' }}>🌊</span>
+                        <p style={{ fontSize: '12.5px', color: '#0077A3', margin: 0, fontWeight: 500, lineHeight: 1.4 }}>
+                          <strong>Paiement Wave en séquestre :</strong> Les {lien?.prix_convenu?.toLocaleString('fr-FR')} FCFA seront réglés via Wave et conservés en toute sécurité sur la plateforme jusqu'à la remise en main propre de l'article !
+                        </p>
+                      </div>
+                    ) : moyenPaiement === 'portefeuille' ? (
                       <div style={{ marginTop: '14px', padding: '12px 14px', background: '#E6F4F2', border: '1px solid #106C62', borderRadius: '8px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                         <span style={{ fontSize: '18px' }}>🛡️</span>
                         <p style={{ fontSize: '12.5px', color: '#106C62', margin: 0, fontWeight: 500, lineHeight: 1.4 }}>

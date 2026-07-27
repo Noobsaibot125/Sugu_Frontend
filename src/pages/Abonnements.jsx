@@ -62,7 +62,14 @@ export default function Abonnements() {
         moyenPaiement: moyenPaiement
       });
       
-      mettreAJourUser(res.data.user);
+      if (res.data.wave_launch_url) {
+        window.location.href = res.data.wave_launch_url;
+        return;
+      }
+
+      if (res.data.user) {
+        mettreAJourUser(res.data.user);
+      }
       setSuccess(true);
       setTimeout(() => {
         navigate('/tableau-de-bord?tab=abonnement');

@@ -5,6 +5,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import AuthLayout from './AuthLayout';
 import GoogleAuthFlowModal from '../../components/ui/GoogleAuthFlowModal';
+import CguPrivacyModal from '../../components/ui/CguPrivacyModal';
 
 const TYPES_COMPTE = [
   { cle: 'particulier', icone: '🙋', label: 'Particulier', description: 'Je vends mes objets personnels' },
@@ -21,11 +22,47 @@ export default function Inscription() {
   const [motDePasse, setMotDePasse] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [accepteConditions, setAccepteConditions] = useState(false);
+  const [cguModalOpen, setCguModalOpen] = useState(false);
+  const [modalDefaultTab, setModalDefaultTab] = useState('cgu');
   const [erreur, setErreur] = useState('');
   const [envoi, setEnvoi] = useState(false);
   const [rccm, setRccm] = useState('');
   const [googleFlowOpen, setGoogleFlowOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleCheckboxClick = (e) => {
+    e.preventDefault();
+    if (!accepteConditions) {
+      setModalDefaultTab('cgu');
+      setCguModalOpen(true);
+    } else {
+      setAccepteConditions(false);
+    }
+  };
+
+  const handleOpenCguLink = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setModalDefaultTab('cgu');
+    setCguModalOpen(true);
+  };
+
+  const handleOpenPrivacyLink = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setModalDefaultTab('privacy');
+    setCguModalOpen(true);
+  };
+
+  const handleAcceptCgu = () => {
+    setAccepteConditions(true);
+    setCguModalOpen(false);
+  };
+
+  const handleRefuseCgu = () => {
+    setAccepteConditions(false);
+    setCguModalOpen(false);
+  };
 
   const motsDePasseDifferents = confirmation.length > 0 && motDePasse !== confirmation;
   const identifiantValide = typeInscription === 'email'
@@ -196,12 +233,19 @@ export default function Inscription() {
           <button
             type="button"
             className={`sugu-auth-conditions${accepteConditions ? ' actif' : ''}`}
-            onClick={() => setAccepteConditions((v) => !v)}
+            onClick={handleCheckboxClick}
           >
             <span className="sugu-auth-conditions__case">{accepteConditions ? '✓' : ''}</span>
             <span className="sugu-auth-conditions__texte">
-              J'accepte les <span className="sugu-link">conditions d'utilisation</span> et la{' '}
-              <span className="sugu-link">politique de confidentialité</span> de Sugu.
+              J'accepte les{' '}
+              <span className="sugu-link" onClick={handleOpenCguLink}>
+                conditions d'utilisation
+              </span>{' '}
+              et la{' '}
+              <span className="sugu-link" onClick={handleOpenPrivacyLink}>
+                politique de confidentialité
+              </span>{' '}
+              de Sugu.
             </span>
           </button>
 
@@ -227,6 +271,13 @@ export default function Inscription() {
         </p>
 
         <GoogleAuthFlowModal isOpen={googleFlowOpen} onClose={() => setGoogleFlowOpen(false)} />
+        <CguPrivacyModal 
+          isOpen={cguModalOpen}
+          defaultTab={modalDefaultTab}
+          onClose={handleRefuseCgu}
+          onAccept={handleAcceptCgu}
+          onRefuse={handleRefuseCgu}
+        />
       </div>
     </AuthLayout>
   );

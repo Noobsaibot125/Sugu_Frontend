@@ -28,8 +28,15 @@ const stats = [
 
 const getFullUrl = (path) => {
   if (!path) return '';
-  if (path.startsWith('http')) return path;
-  return `http://localhost:4000${path}`;
+  let cleanPath = path;
+  if (cleanPath.startsWith('http://localhost:4000')) {
+    cleanPath = cleanPath.replace('http://localhost:4000', '');
+  }
+  if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://')) {
+    return cleanPath;
+  }
+  const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+  return `http://${host}:4000${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
 };
 
 function ListingPreview({ item, sponsored = false, faved, onFavorite }) {
@@ -37,7 +44,7 @@ function ListingPreview({ item, sponsored = false, faved, onFavorite }) {
   if (item.caracteristiques) {
     try {
       parsedSpecs = typeof item.caracteristiques === 'string' ? JSON.parse(item.caracteristiques) : item.caracteristiques;
-    } catch (e) {}
+    } catch (e) { }
   }
   const isJob = !!parsedSpecs.type_contrat;
 
@@ -75,7 +82,7 @@ function ListingPreview({ item, sponsored = false, faved, onFavorite }) {
         <div className="sugu-card__pattern" />
         {item.cover_url ? (
           <img
-            src={item.cover_url}
+            src={getFullUrl(item.cover_url)}
             alt={item.titre}
             style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0 }}
           />
@@ -107,7 +114,7 @@ function ListingPreview({ item, sponsored = false, faved, onFavorite }) {
 export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   const [annonces, setAnnonces] = useState([]);
   const [sponsorisees, setSponsorisees] = useState([]);
   const [favs, setFavs] = useState({});
@@ -202,7 +209,7 @@ export default function Home() {
   useEffect(() => {
     if (Object.keys(categoryCounts).length === 0) return;
 
-    const availableCategories = categoryMeta.filter(cat => 
+    const availableCategories = categoryMeta.filter(cat =>
       cat.id !== 'emploi' && categoryCounts[cat.id] > 0
     );
 
@@ -232,7 +239,7 @@ export default function Home() {
         console.error("Erreur lors du chargement des catégories aléatoires :", err);
       }
     }
-    
+
     loadCategoryItems();
 
     return () => { isMounted = false; };
@@ -471,44 +478,44 @@ export default function Home() {
               <h2>Annonce en tendances</h2>
               <span style={{ fontSize: '13px', fontWeight: 'normal', color: 'var(--sugu-primary)', marginLeft: '8px' }}>⚡ Survolez pour lire !</span>
             </div>
-            
+
             <div className="sugu-vlog-carousel-wrapper">
               {vlogs.length > 4 && (
                 <>
-                  <button 
-                    type="button" 
-                    className="sugu-vlog-scroll-btn sugu-vlog-scroll-btn--left" 
+                  <button
+                    type="button"
+                    className="sugu-vlog-scroll-btn sugu-vlog-scroll-btn--left"
                     onClick={() => scrollContainer('scroll-vlogs', 'left')}
                   >
                     ‹
                   </button>
-                  <button 
-                    type="button" 
-                    className="sugu-vlog-scroll-btn sugu-vlog-scroll-btn--right" 
+                  <button
+                    type="button"
+                    className="sugu-vlog-scroll-btn sugu-vlog-scroll-btn--right"
                     onClick={() => scrollContainer('scroll-vlogs', 'right')}
                   >
                     ›
                   </button>
                 </>
               )}
-              
-              <div 
-                id="scroll-vlogs" 
+
+              <div
+                id="scroll-vlogs"
                 className="sugu-vlog-scroll-container"
               >
                 {vlogs.map((v) => (
-                  <div 
-                    key={v.id} 
+                  <div
+                    key={v.id}
                     className="sugu-vlog-card"
                     onClick={() => handleOpenVlog(v)}
                   >
                     <div className="sugu-vlog-video-wrapper">
                       {v.type_video === 'upload' ? (
-                        <video 
-                          src={v.video_url} 
-                          muted 
-                          playsInline 
-                          loop 
+                        <video
+                          src={v.video_url}
+                          muted
+                          playsInline
+                          loop
                           className="sugu-vlog-video"
                           onMouseEnter={(e) => e.target.play()}
                           onMouseLeave={(e) => { e.target.pause(); e.target.currentTime = 0; }}
@@ -523,18 +530,18 @@ export default function Home() {
                           <div className="sugu-vlog-play-badge">▶</div>
                         </div>
                       )}
-                      
+
                       <div className="sugu-vlog-views-badge">
                         👁️ {v.vues >= 1000000 ? `${(v.vues / 1000000).toFixed(1)} M` : v.vues >= 1000 ? `${(v.vues / 1000).toFixed(1)} k` : v.vues} de vues
                       </div>
                     </div>
-                    
+
                     <div className="sugu-vlog-info">
                       <div className="sugu-vlog-title">{v.annonce_titre}</div>
                       <div className="sugu-vlog-vendeur">
-                        <img 
-                          src={v.vendeur_avatar || 'https://api.dicebear.com/7.x/adventurer/svg?seed=vlog'} 
-                          alt={v.vendeur_nom} 
+                        <img
+                          src={v.vendeur_avatar || 'https://api.dicebear.com/7.x/adventurer/svg?seed=vlog'}
+                          alt={v.vendeur_nom}
                           className="sugu-vlog-avatar"
                         />
                         <span className="sugu-vlog-vendeur-name">{v.vendeur_nom}</span>
@@ -559,16 +566,16 @@ export default function Home() {
             <div className="sugu-card-carousel-wrapper">
               {sponsoriseesAffichees.length > 4 && (
                 <>
-                  <button 
-                    type="button" 
-                    className="sugu-card-scroll-btn sugu-card-scroll-btn--left" 
+                  <button
+                    type="button"
+                    className="sugu-card-scroll-btn sugu-card-scroll-btn--left"
                     onClick={() => scrollContainer('scroll-sponsorisees', 'left')}
                   >
                     ‹
                   </button>
-                  <button 
-                    type="button" 
-                    className="sugu-card-scroll-btn sugu-card-scroll-btn--right" 
+                  <button
+                    type="button"
+                    className="sugu-card-scroll-btn sugu-card-scroll-btn--right"
                     onClick={() => scrollContainer('scroll-sponsorisees', 'right')}
                   >
                     ›
@@ -603,16 +610,16 @@ export default function Home() {
             <div className="sugu-card-carousel-wrapper">
               {recentesAffichees.length > 4 && (
                 <>
-                  <button 
-                    type="button" 
-                    className="sugu-card-scroll-btn sugu-card-scroll-btn--left" 
+                  <button
+                    type="button"
+                    className="sugu-card-scroll-btn sugu-card-scroll-btn--left"
                     onClick={() => scrollContainer('scroll-recentes', 'left')}
                   >
                     ‹
                   </button>
-                  <button 
-                    type="button" 
-                    className="sugu-card-scroll-btn sugu-card-scroll-btn--right" 
+                  <button
+                    type="button"
+                    className="sugu-card-scroll-btn sugu-card-scroll-btn--right"
                     onClick={() => scrollContainer('scroll-recentes', 'right')}
                   >
                     ›
@@ -653,16 +660,16 @@ export default function Home() {
             <div className="sugu-card-carousel-wrapper">
               {block.items.length > 4 && (
                 <>
-                  <button 
-                    type="button" 
-                    className="sugu-card-scroll-btn sugu-card-scroll-btn--left" 
+                  <button
+                    type="button"
+                    className="sugu-card-scroll-btn sugu-card-scroll-btn--left"
                     onClick={() => scrollContainer(`scroll-cat-${block.cat.id}`, 'left')}
                   >
                     ‹
                   </button>
-                  <button 
-                    type="button" 
-                    className="sugu-card-scroll-btn sugu-card-scroll-btn--right" 
+                  <button
+                    type="button"
+                    className="sugu-card-scroll-btn sugu-card-scroll-btn--right"
                     onClick={() => scrollContainer(`scroll-cat-${block.cat.id}`, 'right')}
                   >
                     ›
@@ -689,39 +696,39 @@ export default function Home() {
               <h2>Offres d'emploi</h2>
               <Link to="/recherche?categorie=emploi" className="sugu-link sugu-section__more">Voir plus d'annonces →</Link>
             </div>
-            
+
             <div className="sugu-job-carousel-wrapper">
               {jobOffers.length > 3 && (
                 <>
-                  <button 
-                    type="button" 
-                    className="sugu-job-scroll-btn sugu-job-scroll-btn--left" 
+                  <button
+                    type="button"
+                    className="sugu-job-scroll-btn sugu-job-scroll-btn--left"
                     onClick={() => scrollContainer('scroll-jobs', 'left')}
                   >
                     ‹
                   </button>
-                  <button 
-                    type="button" 
-                    className="sugu-job-scroll-btn sugu-job-scroll-btn--right" 
+                  <button
+                    type="button"
+                    className="sugu-job-scroll-btn sugu-job-scroll-btn--right"
                     onClick={() => scrollContainer('scroll-jobs', 'right')}
                   >
                     ›
                   </button>
                 </>
               )}
-              
-              <div 
-                id="scroll-jobs" 
+
+              <div
+                id="scroll-jobs"
                 className="sugu-job-scroll-container"
               >
                 {jobOffers.map((item) => {
                   let specs = {};
                   if (item.caracteristiques) {
                     try {
-                      specs = typeof item.caracteristiques === 'string' 
-                        ? JSON.parse(item.caracteristiques) 
+                      specs = typeof item.caracteristiques === 'string'
+                        ? JSON.parse(item.caracteristiques)
                         : item.caracteristiques;
-                    } catch (e) {}
+                    } catch (e) { }
                   }
 
                   const formatSalary = (val) => {
@@ -743,9 +750,9 @@ export default function Home() {
                   const initials = compName.split(" ").filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
 
                   return (
-                    <Link 
-                      key={item.id} 
-                      to={'/annonce/' + item.id} 
+                    <Link
+                      key={item.id}
+                      to={'/annonce/' + item.id}
                       className="sugu-job-card"
                     >
                       <div>
@@ -760,7 +767,7 @@ export default function Home() {
                           </span>
                         </div>
                       </div>
-                      
+
                       <div className="sugu-job-footer">
                         <div className="sugu-job-company">
                           <div className="sugu-job-logo">
@@ -772,7 +779,7 @@ export default function Home() {
                           </div>
                           <span className="sugu-job-company-name" title={compName}>{compName}</span>
                         </div>
-                        
+
                         <button
                           type="button"
                           className={'sugu-job-fav-btn' + (favs[item.id] ? ' is-active' : '')}
@@ -808,9 +815,9 @@ export default function Home() {
                 <h3>Vous êtes un professionnel ? Vendez plus, plus vite.</h3>
                 <p>Badge « Pro vérifié », mise en avant automatique et statistiques de vues. Le premier mois est offert.</p>
               </div>
-              <button 
-                type="button" 
-                className="sugu-btn sugu-promo__button" 
+              <button
+                type="button"
+                className="sugu-btn sugu-promo__button"
                 onClick={() => {
                   if (!user) {
                     navigate('/connexion');
@@ -963,30 +970,30 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div style={{ 
-                  border: '1.5px solid var(--sugu-border)', 
-                  borderRadius: '16px', 
-                  padding: '16px', 
+                <div style={{
+                  border: '1.5px solid var(--sugu-border)',
+                  borderRadius: '16px',
+                  padding: '16px',
                   background: 'var(--sugu-bg-soft)',
                   marginBottom: '20px'
                 }}>
-                  <Link 
-                    to={`/annonce/${activeVlog.annonce_id}`} 
+                  <Link
+                    to={`/annonce/${activeVlog.annonce_id}`}
                     onClick={() => setVlogViewerOpen(false)}
                     style={{ textDecoration: 'none', display: 'block' }}
                   >
                     {activeVlog.cover_url && (
-                      <img 
-                        src={activeVlog.cover_url} 
-                        alt={activeVlog.annonce_titre} 
+                      <img
+                        src={activeVlog.cover_url}
+                        alt={activeVlog.annonce_titre}
                         style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '10px', marginBottom: '12px', display: 'block' }}
                       />
                     )}
-                    <h4 
-                      style={{ 
-                        margin: '0 0 8px 0', 
-                        fontSize: '16px', 
-                        fontWeight: 800, 
+                    <h4
+                      style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '16px',
+                        fontWeight: 800,
                         color: 'var(--sugu-ink)',
                         transition: 'color 0.2s'
                       }}
@@ -996,7 +1003,7 @@ export default function Home() {
                       {activeVlog.annonce_titre}
                     </h4>
                   </Link>
-                  
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '10px', borderBottom: '1px solid var(--sugu-border)' }}>
                     <span style={{ color: 'var(--sugu-primary)', fontWeight: 800, fontSize: '15px' }}>
                       {activeVlog.annonce_prix?.toLocaleString('fr-FR')} FCFA
